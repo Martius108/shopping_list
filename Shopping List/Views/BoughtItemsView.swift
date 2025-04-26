@@ -61,7 +61,7 @@ struct BoughtItemsView: View {
         }
         .padding(.top, 14)
         .padding(.bottom, 11)
-        .padding(.leading, 13)
+        .padding(.leading, 12)
         .padding(.trailing, 8)
         .frame(maxWidth: 0.92 * UIScreen.main.bounds.width)
         .background(

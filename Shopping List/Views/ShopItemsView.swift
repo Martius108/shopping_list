@@ -31,11 +31,12 @@ struct ShopItemsView: View {
             ForEach(items.filter { !$0.isBought}) { item in
                 // Row layout for each individual shopping item
                 HStack {
-                    // Display the current quantity of the item
-                    Text("\(item.amount)")
-                        .font(.system(size: 18))
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
-
+                    // Display the current quantity of the item only if it's > 1
+                    if (item.amount > 1) {
+                        Text("\(item.amount)")
+                            .font(.system(size: 18))
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                    }
                     // Display the name of the item
                     Text(item.name)
                         .font(.system(size: 18))

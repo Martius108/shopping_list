@@ -34,6 +34,19 @@ struct ContentView: View {
     @State private var filteredSuggestions: [String] = []
     @State private var newItem: String = ""
 
+    private func removeDuplicateItems() {
+        var seenNames = Set<String>()
+        for item in itemsList {
+            let normalizedName = item.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            if seenNames.contains(normalizedName) {
+                modelContext.delete(item)
+            } else {
+                seenNames.insert(normalizedName)
+            }
+        }
+        try? modelContext.save()
+    }
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -57,11 +70,14 @@ struct ContentView: View {
             }
             .navigationTitle("Shopping List")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                removeDuplicateItems() // Just in case duplicates did appear
+            }
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: ShopItem.self)
+        .modelContainer(for: ShopItem.self) // Just for preview purposes
 }

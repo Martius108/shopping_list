@@ -50,10 +50,20 @@ struct InputItemView: View {
                 guard !newItem.isEmpty else { return }
 
                 let newItemName = newItem
-                    .trimmingCharacters(in: .whitespacesAndNewlines) // <-- Leerzeichen vorne/hinten weg
-                    .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression) // <-- mehrere Leerzeichen innen normalisieren
+                    .trimmingCharacters(in: .whitespacesAndNewlines) // Remove spaces leading and trailing
+                    .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression) // Remove spaces inside
 
-                guard !newItemName.isEmpty else { return } // falls nur Leerzeichen eingegeben wurden
+                guard newItemName.isEmpty == false else { return } // Just in case the text field is empty
+
+                let existingItems = try? modelContext.fetch(FetchDescriptor<ShopItem>()).filter {
+                    $0.name.lowercased() == newItemName.lowercased()
+                }
+                guard existingItems?.isEmpty ?? true else {
+                    // Item already exists, reset input and suggestions
+                    newItem = ""
+                    filteredSuggestions = []
+                    return
+                }
 
                 let item = ShopItem(name: newItemName, amount: 1, isBought: false)
                 modelContext.insert(item)
@@ -68,14 +78,22 @@ struct InputItemView: View {
 
         // Show up to 3 filtered suggestions as tappable list
         if !filteredSuggestions.isEmpty {
-            LazyVStack(alignment: .leading, spacing: 4) {
-                ForEach(filteredSuggestions.prefix(3), id: \.self) { suggestion in
+            LazyVStack(alignment: .leading, spacing: 2) {
+                ForEach(Array(filteredSuggestions.prefix(3).enumerated()), id: \.element) { index, suggestion in
                     Text(suggestion)
                         .padding(.horizontal)
-                        .padding(.vertical, 6)
+                        .padding(.vertical, 9)
+                        .font(.system(size: 17))
                         .foregroundColor(colorScheme == .dark ? .white : .black)
                         .onTapGesture {
-                            // When tapped, select suggestion and add to list
+                            let existingItems = try? modelContext.fetch(FetchDescriptor<ShopItem>()).filter {
+                                $0.name.lowercased() == suggestion.lowercased()
+                            }
+                            guard existingItems?.isEmpty ?? true else {
+                                newItem = ""
+                                filteredSuggestions = []
+                                return
+                            }
                             let item = ShopItem(name: suggestion, amount: 1, isBought: false)
                             modelContext.insert(item)
                             do {
@@ -86,6 +104,10 @@ struct InputItemView: View {
                             newItem = ""
                             filteredSuggestions = []
                         }
+                    if index < filteredSuggestions.prefix(3).count - 1 {
+                        Divider()
+                            .background(colorScheme == .dark ? Color.white : Color.black)
+                    }
                 }
             }
             .frame(maxWidth: 0.9 * UIScreen.main.bounds.width, alignment: .leading)
