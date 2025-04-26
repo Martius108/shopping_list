@@ -9,57 +9,88 @@ import Foundation
 import SwiftUI
 import SwiftData
 
-struct NewItemInputView: View {
+struct InputItemView: View {
     
+    // Access the model context from the environment
     @Environment(\.modelContext) private var modelContext
-    @ObservedObject var dataManager: ShopDataManager
-    
+    // Query to fetch items from the model that are bought
+    @Query(sort: \ShopItem.name) private var items: [ShopItem]
+    // Set a variable to react onto the color scheme
+    @Environment(\.colorScheme) var colorScheme
+
+    // Binding to the new item input string
     @Binding var newItem: String
+    // Binding to the array of filtered suggestions based on user input
     @Binding var filteredSuggestions: [String]
 
     var body: some View {
 
-        TextField("To buy", text: $newItem)
+        // Text input field for new shopping list items
+        TextField("I need", text: $newItem)
             .padding()
-            .background(Color.white.opacity(0.7))
-            .frame(maxWidth: 0.9 * UIScreen.main.bounds.width)
+            .background(colorScheme == .dark ? Color.black.opacity(0.8) : Color.white.opacity(0.7))
+            .frame(maxWidth: 0.9 * UIScreen.main.bounds.width, maxHeight: 40)
+            .font(.system(size: 18))
+            .foregroundColor(colorScheme == .dark ? .white : .black)
             .cornerRadius(8)
             .padding(.horizontal)
             .onChange(of: newItem) {
+                // Capitalize first letter and filter suggestions
                 newItem = newItem.prefix(1).uppercased() + newItem.dropFirst()
-                filteredSuggestions = dataManager.allItemNames.filter {
-                    !newItem.isEmpty && $0.lowercased().hasPrefix(newItem.lowercased())
+
+                // Temporarily store filtered suggestions based on items in modelContext
+                let suggestions = try? modelContext.fetch(FetchDescriptor<ShopItem>()).filter {
+                    !newItem.isEmpty && $0.name.lowercased().hasPrefix(newItem.lowercased())
                 }
+
+                // Update filteredSuggestions Binding correctly
+                self.filteredSuggestions = suggestions?.map { $0.name } ?? []
             }
             .onSubmit {
-                guard !dataManager.allItemNames.contains(where: { $0.lowercased() == newItem.lowercased() }) else {
-                    newItem = ""
-                    filteredSuggestions = []
-                    return
+                guard !newItem.isEmpty else { return }
+
+                let newItemName = newItem
+                    .trimmingCharacters(in: .whitespacesAndNewlines) // <-- Leerzeichen vorne/hinten weg
+                    .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression) // <-- mehrere Leerzeichen innen normalisieren
+
+                guard !newItemName.isEmpty else { return } // falls nur Leerzeichen eingegeben wurden
+
+                let item = ShopItem(name: newItemName, amount: 1, isBought: false)
+                modelContext.insert(item)
+                do {
+                    try modelContext.save()
+                } catch {
+                    print("Error while saving: \(error.localizedDescription)")
                 }
-                dataManager.appendItem(name: newItem, context: modelContext)
                 newItem = ""
                 filteredSuggestions = []
             }
 
+        // Show up to 3 filtered suggestions as tappable list
         if !filteredSuggestions.isEmpty {
             LazyVStack(alignment: .leading, spacing: 4) {
                 ForEach(filteredSuggestions.prefix(3), id: \.self) { suggestion in
                     Text(suggestion)
                         .padding(.horizontal)
                         .padding(.vertical, 6)
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
                         .onTapGesture {
-                            newItem = suggestion
-                            dataManager.appendItem(name: suggestion, context: modelContext)
+                            // When tapped, select suggestion and add to list
+                            let item = ShopItem(name: suggestion, amount: 1, isBought: false)
+                            modelContext.insert(item)
+                            do {
+                                try modelContext.save()
+                            } catch {
+                                print("Error while saving: \(error.localizedDescription)")
+                            }
                             newItem = ""
                             filteredSuggestions = []
                         }
                 }
             }
             .frame(maxWidth: 0.9 * UIScreen.main.bounds.width, alignment: .leading)
-            .background(Color.white.opacity(0.6))
+            .background(colorScheme == .dark ? Color.black.opacity(0.8) : Color.white.opacity(0.6))
             .cornerRadius(6)
-            .padding(.top, 4)
         }
     }
 }

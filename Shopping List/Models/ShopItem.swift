@@ -9,14 +9,17 @@ import Foundation
 import SwiftData
 
 @Model
-class ShopItem: Identifiable {
-    
-    var id: UUID = UUID()
-    var name: String
+// Model class holding the data for shop the list item
+class ShopItem {
+
+    var name: String = ""
     var amount: Int = 1
-    
-    init(name: String, amount: Int = 1) {
+    var isBought: Bool = false
+
+    init(name: String, amount: Int = 1, isBought: Bool = false) {
+
         self.name = name
         self.amount = amount
+        self.isBought = isBought
     }
 }

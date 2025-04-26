@@ -8,40 +8,52 @@
 import SwiftUI
 import SwiftData
 
+// Separate view for a fixed-size background
+struct FixedBackgroundView: View {
+
+    var body: some View {
+        // Use geometry reader to avoid changes of the image when keyboard is toggled
+        GeometryReader { geometry in
+            Image(.image2)
+                .resizable()
+                .scaledToFill()
+                .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+        .edgesIgnoringSafeArea(.all) // Ensure the background covers the entire screen
+    }
+}
+
+// Main view for the shopping list
 struct ContentView: View {
     
+    // Set up all necessary variables and state properties
     @Environment(\.modelContext) private var modelContext: ModelContext
-    @State private var filteredSuggestions: [String] = []
-    @StateObject var dataManager = ShopDataManager()
-    @State private var newItem: String = ""
+    // Set up a query to react onto changes in the data container
+    @Query(sort: \ShopItem.name) var itemsList: [ShopItem]
     
+    @State private var filteredSuggestions: [String] = []
+    @State private var newItem: String = ""
+
     var body: some View {
-        NavigationStack {
+        NavigationView {
             ZStack {
-                // Background Image
-                Image(.image2)
-                    .resizable()
-                    .scaledToFill()
-                    .edgesIgnoringSafeArea(.all)
+                // Fixed background view placed in the back
+                FixedBackgroundView()
 
                 VStack(spacing: 16) {
-                    // Input field for new items
-                    NewItemInputView(
-                        dataManager: dataManager, newItem: $newItem, filteredSuggestions: $filteredSuggestions
+                    // Input text field for items to buy
+                    InputItemView(
+                        newItem: $newItem, filteredSuggestions: $filteredSuggestions
                     )
-
-                    // Lists
-                    VStack(spacing: 12) {
-                        List {
-                            ShopItemsView(dataManager: dataManager)
-                            BoughtItemsView(dataManager: dataManager)
+                    // Scroll view holding the lists for the items
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ShopItemsView(items: itemsList)
+                            BoughtItemsView(items: itemsList)
                         }
-                        .scrollContentBackground(.hidden)
                     }
-
-                    Spacer()
+                    .padding(.top)
                 }
-                .padding(.top)
             }
             .navigationTitle("Shopping List")
             .navigationBarTitleDisplayMode(.inline)
@@ -51,4 +63,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .modelContainer(for: ShopItem.self)
 }
