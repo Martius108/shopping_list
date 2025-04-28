@@ -9,33 +9,33 @@ import Foundation
 import SwiftUI
 import SwiftData
 
+// View for entering new shopping list items and displaying suggestions
 struct InputItemView: View {
     
-    // Access the model context from the environment
+    // Access the model context to interact with the local database
     @Environment(\.modelContext) private var modelContext
-    // Query to fetch items from the model that are bought
+    // Query to fetch all shopping items, sorted by name
     @Query(sort: \ShopItem.name) private var items: [ShopItem]
-    // Set a variable to react onto the color scheme
+    // Access the current color scheme (light/dark mode)
     @Environment(\.colorScheme) var colorScheme
-    // Binding to the current settings
+    // Bindings to settings and user input states
     @Binding var settings: ViewSettings?
-    // Binding to the new item input string
     @Binding var newItem: String
-    // Binding to the array of filtered suggestions based on user input
     @Binding var filteredSuggestions: [String]
 
     var body: some View {
 
-        // Text input field for new shopping list items
+        // Text input field for adding a new item
         TextField("", text: $newItem)
             .padding()
             .background(themedColor(darkModeColor: .black, lightModeColor: .white))
             .frame(maxWidth: 0.9 * UIScreen.main.bounds.width, maxHeight: 40)
             .overlay(
+                // Placeholder text shown when input is empty
                 Text("I need")
                     .foregroundColor(themedColor(darkModeColor: .gray, lightModeColor: .gray))
                     .opacity(newItem.isEmpty ? 1 : 0)
-                    .padding(.leading, 12),
+                    .padding(.leading, 14),
                 alignment: .leading
             )
             .font(.system(size: 18))
@@ -43,36 +43,37 @@ struct InputItemView: View {
             .cornerRadius(8)
             .padding(.horizontal)
             .onChange(of: newItem) {
-                // Capitalize first letter and filter suggestions
+                // Capitalize the first letter of the input
                 newItem = newItem.prefix(1).uppercased() + newItem.dropFirst()
 
-                // Temporarily store filtered suggestions based on items in modelContext
+                // Update suggestions based on current input
                 let suggestions = try? modelContext.fetch(FetchDescriptor<ShopItem>()).filter {
                     !newItem.isEmpty && $0.name.lowercased().hasPrefix(newItem.lowercased())
                 }
-
-                // Update filteredSuggestions Binding correctly
                 self.filteredSuggestions = suggestions?.map { $0.name } ?? []
             }
             .onSubmit {
+                // Handle submission of a new item
                 guard !newItem.isEmpty else { return }
-
+                
                 let newItemName = newItem
-                    .trimmingCharacters(in: .whitespacesAndNewlines) // Remove spaces leading and trailing
-                    .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression) // Remove spaces inside
+                    .trimmingCharacters(in: .whitespacesAndNewlines) // Remove leading/trailing spaces
+                    .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression) // Normalize internal spaces
 
-                guard newItemName.isEmpty == false else { return } // Just in case the text field is empty
+                guard !newItemName.isEmpty else { return }
 
+                // Check if item already exists
                 let existingItems = try? modelContext.fetch(FetchDescriptor<ShopItem>()).filter {
                     $0.name.lowercased() == newItemName.lowercased()
                 }
                 guard existingItems?.isEmpty ?? true else {
-                    // Item already exists, reset input and suggestions
+                    // If item exists, reset input and suggestions
                     newItem = ""
                     filteredSuggestions = []
                     return
                 }
 
+                // Insert new item
                 let item = ShopItem(name: newItemName, amount: 1, isBought: false)
                 modelContext.insert(item)
                 do {
@@ -84,7 +85,7 @@ struct InputItemView: View {
                 filteredSuggestions = []
             }
 
-        // Show up to 3 filtered suggestions as tappable list
+        // Display up to 3 suggestions below the input field
         if !filteredSuggestions.isEmpty {
             LazyVStack(alignment: .leading, spacing: 2) {
                 ForEach(Array(filteredSuggestions.prefix(3).enumerated()), id: \.element) { index, suggestion in
@@ -94,6 +95,7 @@ struct InputItemView: View {
                         .font(.system(size: 17))
                         .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
                         .onTapGesture {
+                            // Add item from suggestion
                             let existingItems = try? modelContext.fetch(FetchDescriptor<ShopItem>()).filter {
                                 $0.name.lowercased() == suggestion.lowercased()
                             }
@@ -112,6 +114,7 @@ struct InputItemView: View {
                             newItem = ""
                             filteredSuggestions = []
                         }
+                    // Insert a divider between suggestions
                     if index < filteredSuggestions.prefix(3).count - 1 {
                         Divider()
                             .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
@@ -124,6 +127,7 @@ struct InputItemView: View {
         }
     }
     
+    // Utility function to return themed color based on user settings and system theme
     private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
         guard let settings = settings else {
             return lightModeColor.opacity(1.0)

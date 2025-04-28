@@ -9,17 +9,20 @@ import Foundation
 import SwiftUI
 import SwiftData
 
+// View for displaying shopping items that have already been bought
 struct BoughtItemsView: View {
 
     // Access the model context from the environment
     @Environment(\.modelContext) private var modelContext
-    // Set a variable to react onto the color scheme
+    // Access the color scheme (light/dark mode) from the environment
     @Environment(\.colorScheme) var colorScheme
-    // The query is in the main view, so here just the item is declared
+    // List of shopping items passed from the parent view
     var items: [ShopItem]
+    // List of settings passed from the parent view
     var settings: [ViewSettings]
 
     var body: some View {
+        // Section displaying the list of bought items
         Section(header: boughtItemsHeader) {
             ForEach(items.filter { $0.isBought }) { item in
                 boughtItemRow(item: item)
@@ -27,6 +30,7 @@ struct BoughtItemsView: View {
         }
     }
     
+    // Header for the "Recently bought" section
     private var boughtItemsHeader: some View {
         Text("Recently bought")
             .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
@@ -36,15 +40,18 @@ struct BoughtItemsView: View {
             .padding(.top, 15)
     }
 
+    // Row layout for a bought item, with a button to reactivate it
     private func boughtItemRow(item: ShopItem) -> some View {
         HStack {
+            // Display the item name
             Text(item.name)
                 .font(.system(size: 18))
                 .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
             Spacer()
+            // Button to mark the item as "not bought" again
             Button {
                 withAnimation {
-                    item.isBought = false  // Reactivates the item
+                    item.isBought = false
                     do {
                         try modelContext.save()
                     } catch {
@@ -72,6 +79,7 @@ struct BoughtItemsView: View {
         )
     }
     
+    // Returns a color adjusted for the theme mode and user settings
     private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
         let theme = settings[0].themeMode
         let elementOpacity = settings[0].elementOpacity

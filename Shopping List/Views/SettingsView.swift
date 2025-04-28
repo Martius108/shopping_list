@@ -9,22 +9,24 @@ import Foundation
 import SwiftUI
 import SwiftData
 
+// View for adjusting app settings like theme, background, and opacity
 struct SettingsView: View {
     
-    // Access the model context from the environment
+    // Access the model context to save changes
     @Environment(\.modelContext) private var modelContext
-    // Set a variable to react onto the color scheme
+    // Access the current color scheme (light/dark mode)
     @Environment(\.colorScheme) var colorScheme
-    // Set the settings instance and bind it to the content view
+    // Bind the settings instance to this view
     @Binding var settings: ViewSettings
     
-    @State private var selectedImage: UIImage? = nil // For the image picker
-    @State private var showImagePicker = false // To trigger the image picker
-    
+    // Local state for handling image selection
+    @State private var selectedImage: UIImage? = nil
+    @State private var showImagePicker = false
+
     var body: some View {
         
         Form {
-            // Scheme Mode Picker
+            // Theme Mode Picker Section
             Section(header: Text("Theme Mode")) {
                 Picker("Select Theme", selection: $settings.themeMode) {
                     Text("System").tag("system")
@@ -43,7 +45,7 @@ struct SettingsView: View {
                 }
             }
             
-            // Background Image Picker
+            // Background Image Picker Section
             Section(header: Text("Background Image")) {
                 Button("Select Image") {
                     showImagePicker.toggle()
@@ -60,21 +62,20 @@ struct SettingsView: View {
             .onChange(of: selectedImage) { oldImage, newImage in
                 if let newImage = newImage {
                     settings.backgroundImageData = newImage.jpegData(compressionQuality: 0.8)
-                
                     guard let backgroundImageData = settings.backgroundImageData else {
                         print("Image data is nil.")
                         return
                     }
                     do {
-                        try modelContext.save()  // Speichern des Kontextes
+                        try modelContext.save()
                         print("Image saved. Size: \(backgroundImageData.count) Bytes")
                     } catch {
-                        print("Image upload failded: \(error.localizedDescription)")
+                        print("Saving background image failed: \(error.localizedDescription)")
                     }
                 }
             }
             
-            // Opacity Slider
+            // Opacity Slider Section
             Section(header: Text("Opacity")) {
                 Slider(value: $settings.elementOpacity, in: 0...1, step: 0.02)
                     .padding()
@@ -84,39 +85,39 @@ struct SettingsView: View {
                 settings.elementOpacity = newValue
                 do {
                     try modelContext.save()
-                    print("Opacity changed: \(settings.elementOpacity)")
+                    print("Opacity changed to: \(Int(newValue * 100))%")
                 } catch {
                     print("Saving opacity failed: \(error.localizedDescription)")
                 }
             }
-            // Background color picker
+            
+            // Background Color Picker Section
             Section(header: Text("Background Color")) {
                 ColorPicker("Select Background Color", selection: Binding(
                     get: { Color(hex: settings.backgroundColor) },
                     set: { newColor in
+                        // Reset background image when a new color is chosen
                         settings.backgroundImageData = nil
                         settings.backgroundColor = newColor.toHex()
                         do {
-                            try modelContext.save() // Speichern der neuen Farbe
-                            print("Color changed: \(settings.backgroundColor)")
+                            try modelContext.save()
+                            print("Background color changed to: \(settings.backgroundColor)")
                         } catch {
-                            print("Saving color failded: \(error.localizedDescription)")
+                            print("Saving background color failed: \(error.localizedDescription)")
                         }
                     }
                 ))
             }
         }
         .sheet(isPresented: $showImagePicker) {
+            // Present the native image picker
             ImagePicker(image: $selectedImage)
-        }
-        .onDisappear {
-            // Do ssomething here
         }
         .navigationTitle("Settings")
     }
 }
 
-// Simple Image Picker for selecting images
+// Simple SwiftUI wrapper for presenting the image picker
 struct ImagePicker: View {
     @Binding var image: UIImage?
     
@@ -125,7 +126,7 @@ struct ImagePicker: View {
     }
 }
 
-// UIKit ImagePickerController wrapped in SwiftUI for image picking
+// UIKit-based image picker wrapped for SwiftUI
 struct ImagePickerController: UIViewControllerRepresentable {
     @Binding var image: UIImage?
     
@@ -141,7 +142,8 @@ struct ImagePickerController: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-    
+
+    // Coordinator to handle image picking actions
     class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         @Binding var image: UIImage?
         
@@ -161,4 +163,3 @@ struct ImagePickerController: UIViewControllerRepresentable {
         }
     }
 }
-

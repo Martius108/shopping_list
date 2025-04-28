@@ -9,19 +9,20 @@ import Foundation
 import SwiftUI
 import SwiftData
 
+// View for displaying shopping items that are not yet bought
 struct ShopItemsView: View {
     
-    // Access the model context from the environment
+    // Access the model context to interact with the local database
     @Environment(\.modelContext) private var modelContext
-    // Set a variable to react onto the color scheme
+    // Access the current color scheme (light/dark mode) from the environment
     @Environment(\.colorScheme) var colorScheme
-    // The query is in the main view, so here just the item is declared
+    // Items passed in from the main view
     var items: [ShopItem]
     var settings: [ViewSettings]
     
     var body: some View {
         
-        // Display the list of shopping items that are not yet bought
+        // Section displaying the list of items that are not bought yet
         Section(header:
                     Text("To buy")
             .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
@@ -30,15 +31,15 @@ struct ShopItemsView: View {
             .padding(.bottom, 8)
         ) {
             ForEach(items.filter { !$0.isBought}) { item in
-                // Row layout for each individual shopping item
+                // Row layout for each shopping item
                 HStack {
-                    // Display the current quantity of the item only if it's > 1
+                    // Display the quantity if greater than 1
                     if (item.amount > 1) {
                         Text("\(item.amount)")
                             .font(.system(size: 18))
                             .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
                     }
-                    // Display the name of the item
+                    // Display the item name
                     Text(item.name)
                         .font(.system(size: 18))
                         .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
@@ -46,11 +47,11 @@ struct ShopItemsView: View {
                     Spacer()
                     
                     HStack(spacing: 4) {
-                        // Decrease the amount; if amount is 1, mark the item as bought instead
+                        // Button to decrease amount or mark as bought if only 1 left
                         Button(action: {
                             if item.amount == 1 {
                                 withAnimation {
-                                    item.isBought = true  // Mark as bought
+                                    item.isBought = true  // Mark item as bought
                                     do {
                                         try modelContext.save()
                                     } catch {
@@ -59,7 +60,7 @@ struct ShopItemsView: View {
                                 }
                             } else {
                                 let newAmount = item.amount - 1
-                                item.amount = newAmount   // Increase the amount
+                                item.amount = newAmount  // Decrease amount
                                 do {
                                     try modelContext.save()
                                 } catch {
@@ -74,11 +75,11 @@ struct ShopItemsView: View {
                         .buttonStyle(PlainButtonStyle())
                         .padding(.trailing, 9)
                         
-                        // Increase the amount of the item by 1
+                        // Button to increase amount by 1
                         Button(action: {
                             let newAmount = item.amount + 1
-                            item.amount = newAmount   // Increase the amount
-                            try? modelContext.save()  // Save new amount
+                            item.amount = newAmount
+                            try? modelContext.save() // Save without explicit error handling
                         }) {
                             Image(systemName: "plus.circle.fill")
                                 .imageScale(.large)
@@ -87,10 +88,10 @@ struct ShopItemsView: View {
                         .buttonStyle(PlainButtonStyle())
                         .padding(.trailing, 15)
                         
-                        // Manually mark the item as bought
+                        // Button to manually mark the item as bought
                         Button {
                             withAnimation {
-                                item.isBought = true  // Mark as bought
+                                item.isBought = true
                                 do {
                                     try modelContext.save()
                                 } catch {
@@ -121,6 +122,7 @@ struct ShopItemsView: View {
         }
     }
     
+    // Returns a color adjusted for the current theme and user settings
     private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
         let theme = settings[0].themeMode
         let elementOpacity = settings[0].elementOpacity
