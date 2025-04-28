@@ -17,7 +17,8 @@ struct InputItemView: View {
     @Query(sort: \ShopItem.name) private var items: [ShopItem]
     // Set a variable to react onto the color scheme
     @Environment(\.colorScheme) var colorScheme
-
+    // Binding to the current settings
+    @Binding var settings: ViewSettings?
     // Binding to the new item input string
     @Binding var newItem: String
     // Binding to the array of filtered suggestions based on user input
@@ -26,12 +27,19 @@ struct InputItemView: View {
     var body: some View {
 
         // Text input field for new shopping list items
-        TextField("I need", text: $newItem)
+        TextField("", text: $newItem)
             .padding()
-            .background(colorScheme == .dark ? Color.black.opacity(0.8) : Color.white.opacity(0.7))
+            .background(themedColor(darkModeColor: .black, lightModeColor: .white))
             .frame(maxWidth: 0.9 * UIScreen.main.bounds.width, maxHeight: 40)
+            .overlay(
+                Text("I need")
+                    .foregroundColor(themedColor(darkModeColor: .gray, lightModeColor: .gray))
+                    .opacity(newItem.isEmpty ? 1 : 0)
+                    .padding(.leading, 12),
+                alignment: .leading
+            )
             .font(.system(size: 18))
-            .foregroundColor(colorScheme == .dark ? .white : .black)
+            .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
             .cornerRadius(8)
             .padding(.horizontal)
             .onChange(of: newItem) {
@@ -84,7 +92,7 @@ struct InputItemView: View {
                         .padding(.horizontal)
                         .padding(.vertical, 9)
                         .font(.system(size: 17))
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
+                        .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
                         .onTapGesture {
                             let existingItems = try? modelContext.fetch(FetchDescriptor<ShopItem>()).filter {
                                 $0.name.lowercased() == suggestion.lowercased()
@@ -106,13 +114,35 @@ struct InputItemView: View {
                         }
                     if index < filteredSuggestions.prefix(3).count - 1 {
                         Divider()
-                            .background(colorScheme == .dark ? Color.white : Color.black)
+                            .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
                     }
                 }
             }
             .frame(maxWidth: 0.9 * UIScreen.main.bounds.width, alignment: .leading)
-            .background(colorScheme == .dark ? Color.black.opacity(0.8) : Color.white.opacity(0.6))
-            .cornerRadius(6)
+            .background(themedColor(darkModeColor: .black, lightModeColor: .white))
+            .cornerRadius(8)
+        }
+    }
+    
+    private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
+        guard let settings = settings else {
+            return lightModeColor.opacity(1.0)
+        }
+        
+        let theme = settings.themeMode
+        let elementOpacity = settings.elementOpacity
+
+        switch theme {
+        case "dark":
+            return darkModeColor.opacity(0.8)
+        case "light":
+            return lightModeColor.opacity(elementOpacity)
+        case "system":
+            return colorScheme == .dark
+                ? darkModeColor.opacity(0.8)
+                : lightModeColor.opacity(elementOpacity)
+        default:
+            return lightModeColor.opacity(elementOpacity)
         }
     }
 }

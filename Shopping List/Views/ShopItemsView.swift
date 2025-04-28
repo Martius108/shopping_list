@@ -17,13 +17,14 @@ struct ShopItemsView: View {
     @Environment(\.colorScheme) var colorScheme
     // The query is in the main view, so here just the item is declared
     var items: [ShopItem]
+    var settings: [ViewSettings]
     
     var body: some View {
         
         // Display the list of shopping items that are not yet bought
         Section(header:
-            Text("To buy")
-            .foregroundColor(colorScheme == .dark ? .white : .black)
+                    Text("To buy")
+            .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
             .font(.system(size: 17, weight: .bold))
             .frame(maxWidth: 0.92 * UIScreen.main.bounds.width, alignment: .leading)
             .padding(.bottom, 8)
@@ -35,15 +36,15 @@ struct ShopItemsView: View {
                     if (item.amount > 1) {
                         Text("\(item.amount)")
                             .font(.system(size: 18))
-                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
                     }
                     // Display the name of the item
                     Text(item.name)
                         .font(.system(size: 18))
-                        .foregroundColor(colorScheme == .dark ? .white : .black)
-
+                        .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
+                    
                     Spacer()
-
+                    
                     HStack(spacing: 4) {
                         // Decrease the amount; if amount is 1, mark the item as bought instead
                         Button(action: {
@@ -68,11 +69,11 @@ struct ShopItemsView: View {
                         }) {
                             Image(systemName: "minus.circle.fill")
                                 .imageScale(.large)
-                                .foregroundColor(colorScheme == .dark ? .white : .gray)
+                                .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .gray))
                         }
                         .buttonStyle(PlainButtonStyle())
                         .padding(.trailing, 9)
-
+                        
                         // Increase the amount of the item by 1
                         Button(action: {
                             let newAmount = item.amount + 1
@@ -81,11 +82,11 @@ struct ShopItemsView: View {
                         }) {
                             Image(systemName: "plus.circle.fill")
                                 .imageScale(.large)
-                                .foregroundColor(colorScheme == .dark ? .white : .gray)
+                                .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .gray))
                         }
                         .buttonStyle(PlainButtonStyle())
                         .padding(.trailing, 15)
-
+                        
                         // Manually mark the item as bought
                         Button {
                             withAnimation {
@@ -100,7 +101,7 @@ struct ShopItemsView: View {
                             Image(systemName: "circle")
                                 .resizable()
                                 .frame(width: 20, height: 20)
-                                .foregroundColor(colorScheme == .dark ? .blue : .blue)
+                                .foregroundColor(.blue)
                                 .scaleEffect(1.1)
                         }
                         .padding(.trailing, 8)
@@ -113,10 +114,28 @@ struct ShopItemsView: View {
                 .frame(maxWidth: 0.92 * UIScreen.main.bounds.width)
                 .background(
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(colorScheme == .dark ? Color.black.opacity(0.8) : Color.white.opacity(0.8))
+                        .fill(themedColor(darkModeColor: .black, lightModeColor: .white))
                         .padding(.top, 3)
                 )
             }
+        }
+    }
+    
+    private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
+        let theme = settings[0].themeMode
+        let elementOpacity = settings[0].elementOpacity
+
+        switch theme {
+        case "dark":
+            return darkModeColor.opacity(0.8)
+        case "light":
+            return lightModeColor.opacity(elementOpacity)
+        case "system":
+            return colorScheme == .dark
+                ? darkModeColor.opacity(0.8)
+                : lightModeColor.opacity(elementOpacity)
+        default:
+            return lightModeColor.opacity(elementOpacity)
         }
     }
 }

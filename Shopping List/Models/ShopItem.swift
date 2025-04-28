@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-// Model class holding the data for shop the list item
+// Model class holding the data for shop the list items
 class ShopItem {
 
     var name: String = ""

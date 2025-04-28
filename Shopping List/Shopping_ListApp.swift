@@ -10,10 +10,11 @@ import SwiftData
 
 @main
 struct Shopping_ListApp: App {
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: ShopItem.self)
+        .modelContainer(for: [ShopItem.self, ViewSettings.self])
     }
 }

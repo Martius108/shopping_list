@@ -17,6 +17,7 @@ struct BoughtItemsView: View {
     @Environment(\.colorScheme) var colorScheme
     // The query is in the main view, so here just the item is declared
     var items: [ShopItem]
+    var settings: [ViewSettings]
 
     var body: some View {
         Section(header: boughtItemsHeader) {
@@ -27,8 +28,8 @@ struct BoughtItemsView: View {
     }
     
     private var boughtItemsHeader: some View {
-        Text("Recently Bought")
-            .foregroundColor(colorScheme == .dark ? .white : .black)
+        Text("Recently bought")
+            .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
             .font(.system(size: 17, weight: .bold))
             .frame(maxWidth: 0.92 * UIScreen.main.bounds.width, alignment: .leading)
             .padding(.bottom, 8)
@@ -39,7 +40,7 @@ struct BoughtItemsView: View {
         HStack {
             Text(item.name)
                 .font(.system(size: 18))
-                .foregroundColor(colorScheme == .dark ? .white : .black)
+                .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
             Spacer()
             Button {
                 withAnimation {
@@ -54,7 +55,7 @@ struct BoughtItemsView: View {
                 Image(systemName: "arrow.uturn.left")
                     .resizable()
                     .frame(width: 18, height: 18)
-                    .foregroundColor(colorScheme == .dark ? .green : .green)
+                    .foregroundColor(.green)
                     .scaleEffect(1.1)
             }
             .padding(.trailing, 8)
@@ -66,8 +67,26 @@ struct BoughtItemsView: View {
         .frame(maxWidth: 0.92 * UIScreen.main.bounds.width)
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(colorScheme == .dark ? Color.black.opacity(0.8) : Color.white.opacity(0.8))
+                .fill(themedColor(darkModeColor: .black, lightModeColor: .white))
                 .padding(.top, 3)
         )
+    }
+    
+    private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
+        let theme = settings[0].themeMode
+        let elementOpacity = settings[0].elementOpacity
+
+        switch theme {
+        case "dark":
+            return darkModeColor.opacity(0.8)
+        case "light":
+            return lightModeColor.opacity(elementOpacity)
+        case "system":
+            return colorScheme == .dark
+                ? darkModeColor.opacity(0.8)
+                : lightModeColor.opacity(elementOpacity)
+        default:
+            return lightModeColor.opacity(elementOpacity)
+        }
     }
 }

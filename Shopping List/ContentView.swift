@@ -5,19 +5,29 @@
 //  Created by Martin Lanius on 23.04.25.
 //
 
+import Foundation
 import SwiftUI
 import SwiftData
 
 // Separate view for a fixed-size background
 struct FixedBackgroundView: View {
+    
+    var image: UIImage? = nil
+    var backgroundColor: Color = .white
 
     var body: some View {
         // Use geometry reader to avoid changes of the image when keyboard is toggled
         GeometryReader { geometry in
-            Image(.image2)
-                .resizable()
-                .scaledToFill()
-                .frame(width: geometry.size.width, height: geometry.size.height)
+            if let image = image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+            } else {
+                Rectangle()
+                    .fill(backgroundColor)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+            }
         }
         .edgesIgnoringSafeArea(.all) // Ensure the background covers the entire screen
     }
@@ -31,47 +41,83 @@ struct ContentView: View {
     // Set up a query to react onto changes in the data container
     @Query(sort: \ShopItem.name) var itemsList: [ShopItem]
     
+    // Get all settings from iCloud
+    @Query var settingsList: [ViewSettings]
+        
+    // Local state for current settings
+    @State private var settings: ViewSettings?
+    @State private var isShowingSettings: Bool = false
+    
     @State private var filteredSuggestions: [String] = []
     @State private var newItem: String = ""
 
-    private func removeDuplicateItems() {
-        var seenNames = Set<String>()
-        for item in itemsList {
-            let normalizedName = item.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-            if seenNames.contains(normalizedName) {
-                modelContext.delete(item)
-            } else {
-                seenNames.insert(normalizedName)
-            }
-        }
-        try? modelContext.save()
-    }
-
     var body: some View {
-        NavigationView {
-            ZStack {
-                // Fixed background view placed in the back
-                FixedBackgroundView()
+        NavigationStack {
+            if let settings = settings {
+                ZStack {
+                    if let backgroundImageData = settings.backgroundImageData, let image = UIImage(data: backgroundImageData) {
+                        FixedBackgroundView(image: image)
+                    } else {
+                        FixedBackgroundView(backgroundColor: Color(hex: settings.backgroundColor))
+                    }
 
-                VStack(spacing: 16) {
-                    // Input text field for items to buy
-                    InputItemView(
-                        newItem: $newItem, filteredSuggestions: $filteredSuggestions
-                    )
-                    // Scroll view holding the lists for the items
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            ShopItemsView(items: itemsList)
-                            BoughtItemsView(items: itemsList)
+                    VStack(spacing: 16) {
+                        InputItemView(
+                            settings: $settings, newItem: $newItem,
+                            filteredSuggestions: $filteredSuggestions
+                        )
+                        ScrollView {
+                            VStack(spacing: 0) {
+                                ShopItemsView(items: itemsList, settings: settingsList)
+                                BoughtItemsView(items: itemsList, settings: settingsList)
+                            }
+                        }
+                        .padding(.top)
+                    }
+                }
+                .navigationTitle("Shopping List")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            isShowingSettings = true
+                        } label: {
+                            Image(systemName: "gear")
+                                .font(.title2)
+                                .padding(.bottom, 12)
+                                .padding(.trailing, 4)
                         }
                     }
-                    .padding(.top)
+                }
+                .navigationDestination(isPresented: $isShowingSettings) {
+                    SettingsView(settings: Binding(
+                        get: { settings },
+                        set: { self.settings = $0 }
+                    ))
+                }
+            } else {
+                ProgressView("Loading settings ...")
+                    .onAppear {
+                        loadSettings()
                 }
             }
-            .navigationTitle("Shopping List")
-            .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                removeDuplicateItems() // Just in case duplicates did appear
+        }
+    }
+    
+    private func loadSettings() {
+        if let existingSettings = settingsList.first {
+            settings = existingSettings
+        } else {
+            // Erzeuge neue Settings und speichere sie in der Cloud
+            let newSettings = ViewSettings()
+            modelContext.insert(newSettings)
+            do {
+                try modelContext.save()
+                print("Settings saved")
+                settings = newSettings
+                print("No existing settings found. Created new settings.")
+            } catch {
+                print("Failed to save new settings: \(error.localizedDescription)")
             }
         }
     }
@@ -79,5 +125,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: ShopItem.self) // Just for preview purposes
+        .modelContainer(for: [ShopItem.self, ViewSettings.self])
 }
