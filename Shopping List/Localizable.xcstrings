@@ -84,6 +84,16 @@
         }
       }
     },
+    "Item name" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produktname"
+          }
+        }
+      }
+    },
     "Light" : {
       "localizations" : {
         "de" : {

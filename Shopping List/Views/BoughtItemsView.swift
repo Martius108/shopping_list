@@ -24,7 +24,7 @@ struct BoughtItemsView: View {
     var body: some View {
         // Section displaying the list of bought items
         Section(header: boughtItemsHeader) {
-            ForEach(items.filter { $0.isBought }) { item in
+            ForEach(items.filter { $0.isBought }.sorted(by: { $0.createdAt > $1.createdAt }).prefix(20)) { item in
                 boughtItemRow(item: item)
             }
         }

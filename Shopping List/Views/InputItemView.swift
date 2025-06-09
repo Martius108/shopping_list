@@ -31,11 +31,11 @@ struct InputItemView: View {
             .background(themedColor(darkModeColor: .black, lightModeColor: .white))
             .frame(maxWidth: 0.9 * UIScreen.main.bounds.width, maxHeight: 40)
             .overlay(
-                // Placeholder text shown when input is empty
                 Text("I need")
                     .foregroundColor(themedColor(darkModeColor: .gray, lightModeColor: .gray))
                     .opacity(newItem.isEmpty ? 1 : 0)
-                    .padding(.leading, 14),
+                    .padding(.leading, 14)
+                    .allowsHitTesting(false),
                 alignment: .leading
             )
             .font(.system(size: 18))
@@ -53,36 +53,34 @@ struct InputItemView: View {
                 self.filteredSuggestions = suggestions?.map { $0.name } ?? []
             }
             .onSubmit {
-                // Handle submission of a new item
                 guard !newItem.isEmpty else { return }
-                
+
                 let newItemName = newItem
-                    .trimmingCharacters(in: .whitespacesAndNewlines) // Remove leading/trailing spaces
-                    .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression) // Normalize internal spaces
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
 
                 guard !newItemName.isEmpty else { return }
 
-                // Check if item already exists
-                let existingItems = try? modelContext.fetch(FetchDescriptor<ShopItem>()).filter {
-                    $0.name.lowercased() == newItemName.lowercased()
-                }
-                guard existingItems?.isEmpty ?? true else {
-                    // If item exists, reset input and suggestions
+                do {
+                    let allItems = try modelContext.fetch(FetchDescriptor<ShopItem>())
+                    if let match = allItems.first(where: { $0.name.lowercased() == newItemName.lowercased() }) {
+                        if match.isBought {
+                            match.isBought = false
+                            try modelContext.save()
+                        }
+                        newItem = ""
+                        filteredSuggestions = []
+                        return
+                    }
+
+                    let item = ShopItem(name: newItemName, amount: 1, isBought: false)
+                    modelContext.insert(item)
+                    try modelContext.save()
                     newItem = ""
                     filteredSuggestions = []
-                    return
-                }
-
-                // Insert new item
-                let item = ShopItem(name: newItemName, amount: 1, isBought: false)
-                modelContext.insert(item)
-                do {
-                    try modelContext.save()
                 } catch {
-                    print("Error while saving: \(error.localizedDescription)")
+                    print("Error: \(error.localizedDescription)")
                 }
-                newItem = ""
-                filteredSuggestions = []
             }
 
         // Display up to 3 suggestions below the input field
@@ -95,24 +93,26 @@ struct InputItemView: View {
                         .font(.system(size: 17))
                         .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
                         .onTapGesture {
-                            // Add item from suggestion
-                            let existingItems = try? modelContext.fetch(FetchDescriptor<ShopItem>()).filter {
-                                $0.name.lowercased() == suggestion.lowercased()
-                            }
-                            guard existingItems?.isEmpty ?? true else {
+                            do {
+                                let allItems = try modelContext.fetch(FetchDescriptor<ShopItem>())
+                                if let match = allItems.first(where: { $0.name.lowercased() == suggestion.lowercased() }) {
+                                    if match.isBought {
+                                        match.isBought = false
+                                        try modelContext.save()
+                                    }
+                                    newItem = ""
+                                    filteredSuggestions = []
+                                    return
+                                }
+
+                                let item = ShopItem(name: suggestion, amount: 1, isBought: false)
+                                modelContext.insert(item)
+                                try modelContext.save()
                                 newItem = ""
                                 filteredSuggestions = []
-                                return
-                            }
-                            let item = ShopItem(name: suggestion, amount: 1, isBought: false)
-                            modelContext.insert(item)
-                            do {
-                                try modelContext.save()
                             } catch {
-                                print("Error while saving: \(error.localizedDescription)")
+                                print("Error: \(error.localizedDescription)")
                             }
-                            newItem = ""
-                            filteredSuggestions = []
                         }
                     // Insert a divider between suggestions
                     if index < filteredSuggestions.prefix(3).count - 1 {

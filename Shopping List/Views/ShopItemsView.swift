@@ -20,6 +20,9 @@ struct ShopItemsView: View {
     var items: [ShopItem]
     var settings: [ViewSettings]
     
+    @State private var editingItemID: UUID?
+    @State private var editedName: String = ""
+    
     var body: some View {
         
         // Section displaying the list of items that are not bought yet
@@ -39,10 +42,29 @@ struct ShopItemsView: View {
                             .font(.system(size: 18))
                             .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
                     }
-                    // Display the item name
-                    Text(item.name)
+                    // Display the item name or TextField for editing
+                    if editingItemID == item.id {
+                        TextField("Item name", text: $editedName, onCommit: {
+                            item.name = editedName
+                            do {
+                                try modelContext.save()
+                            } catch {
+                                print("Error while saving edited name: \(error.localizedDescription)")
+                            }
+                            editingItemID = nil
+                        })
                         .font(.system(size: 18))
-                        .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(maxWidth: .infinity)
+                    } else {
+                        Text(item.name)
+                            .font(.system(size: 18))
+                            .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
+                            .onTapGesture {
+                                editingItemID = item.id
+                                editedName = item.name
+                            }
+                    }
                     
                     Spacer()
                     
@@ -118,6 +140,13 @@ struct ShopItemsView: View {
                         .fill(themedColor(darkModeColor: .black, lightModeColor: .white))
                         .padding(.top, 3)
                 )
+            }
+            .onDelete { indexSet in
+                for index in indexSet {
+                    let item = items.filter { !$0.isBought }[index]
+                    modelContext.delete(item)
+                }
+                try? modelContext.save()
             }
         }
     }

@@ -80,6 +80,10 @@ struct ContentView: View {
                         }
                         .padding(.top)
                     }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    }
                 }
                 .navigationTitle("Shopping List")
                 .navigationBarTitleDisplayMode(.inline)
