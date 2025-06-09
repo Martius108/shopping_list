@@ -91,6 +91,12 @@
             "state" : "translated",
             "value" : "Produktname"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Item name"
+          }
         }
       }
     },
@@ -133,6 +139,12 @@
             "state" : "translated",
             "value" : "Transparenz"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opacity"
+          }
         }
       }
     },
@@ -158,6 +170,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kürzlich gekauft"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recently bought"
           }
         }
       }
