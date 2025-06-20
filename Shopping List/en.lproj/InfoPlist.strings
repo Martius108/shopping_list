@@ -1,9 +1,8 @@
-/* 
-  InfoPlist.strings
-  Shopping List
+//
+//  InfoPlist.strings
+//  Shopping List
+//
+//  Created by Martin Lanius on 09.06.25
+//
 
-  Created by Martin Lanius on 09.06.25.
-  
-*/
-
-CFBundleDisplayName = "Shopping list";
+CFBundleDisplayName = "Shopping List";

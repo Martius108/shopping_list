@@ -18,6 +18,8 @@ struct InputItemView: View {
     @Query(sort: \ShopItem.name) private var items: [ShopItem]
     // Access the current color scheme (light/dark mode)
     @Environment(\.colorScheme) var colorScheme
+    // Add a focus to the text field (to make the keyboard disappear)
+    @FocusState private var isTextFieldFocused: Bool
     // Bindings to settings and user input states
     @Binding var settings: ViewSettings?
     @Binding var newItem: String
@@ -27,6 +29,7 @@ struct InputItemView: View {
 
         // Text input field for adding a new item
         TextField("", text: $newItem)
+            .focused($isTextFieldFocused)
             .padding()
             .background(themedColor(darkModeColor: .black, lightModeColor: .white))
             .frame(maxWidth: 0.9 * UIScreen.main.bounds.width, maxHeight: 40)
@@ -102,6 +105,7 @@ struct InputItemView: View {
                                     }
                                     newItem = ""
                                     filteredSuggestions = []
+                                    isTextFieldFocused = false
                                     return
                                 }
 
@@ -110,6 +114,7 @@ struct InputItemView: View {
                                 try modelContext.save()
                                 newItem = ""
                                 filteredSuggestions = []
+                                isTextFieldFocused = false
                             } catch {
                                 print("Error: \(error.localizedDescription)")
                             }
