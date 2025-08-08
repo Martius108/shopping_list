@@ -73,6 +73,7 @@ struct ShopItemsView: View {
                         Button(action: {
                             if item.amount == 1 {
                                 withAnimation {
+                                    item.createdAt = Date()
                                     item.isBought = true  // Mark item as bought
                                     do {
                                         try modelContext.save()
@@ -113,6 +114,7 @@ struct ShopItemsView: View {
                         // Button to manually mark the item as bought
                         Button {
                             withAnimation {
+                                item.createdAt = Date()
                                 item.isBought = true
                                 do {
                                     try modelContext.save()

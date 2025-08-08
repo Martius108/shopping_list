@@ -18,11 +18,11 @@ final class ShopItem: Identifiable {
     var amount: Int = 1
     var isBought: Bool = false
 
-    init(name: String, createdAt: Date = Date(), amount: Int = 1, isBought: Bool = false) {
+    init(name: String, amount: Int = 1, isBought: Bool = false, createdAt: Date = Date()) {
 
         self.name = name
-        self.createdAt = createdAt
         self.amount = amount
         self.isBought = isBought
+        self.createdAt = createdAt
     }
 }

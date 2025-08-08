@@ -76,7 +76,7 @@ struct InputItemView: View {
                         return
                     }
 
-                    let item = ShopItem(name: newItemName, amount: 1, isBought: false)
+                    let item = ShopItem(name: newItemName, amount: 1, isBought: false, createdAt: Date())
                     modelContext.insert(item)
                     try modelContext.save()
                     newItem = ""
@@ -109,7 +109,7 @@ struct InputItemView: View {
                                     return
                                 }
 
-                                let item = ShopItem(name: suggestion, amount: 1, isBought: false)
+                                let item = ShopItem(name: suggestion, amount: 1, isBought: false, createdAt: Date())
                                 modelContext.insert(item)
                                 try modelContext.save()
                                 newItem = ""
