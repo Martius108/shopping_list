@@ -6,3 +6,4 @@
 //
 
 CFBundleDisplayName = "Shopping List";
+NSPhotoLibraryUsageDescription = "Select a photo to use as your shopping list background.";

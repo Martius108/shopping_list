@@ -18,13 +18,13 @@ struct BoughtItemsView: View {
     @Environment(\.colorScheme) var colorScheme
     // List of shopping items passed from the parent view
     var items: [ShopItem]
-    // List of settings passed from the parent view
-    var settings: [ViewSettings]
+    // Settings passed from the parent view
+    var settings: ViewSettings
 
     var body: some View {
         // Section displaying the list of bought items
         Section(header: boughtItemsHeader) {
-            ForEach(items.filter { $0.isBought }.sorted(by: { $0.createdAt > $1.createdAt }).prefix(30)) { item in
+            ForEach(ShoppingListLogic.recentlyBoughtItems(from: items)) { item in
                 boughtItemRow(item: item)
             }
         }
@@ -81,19 +81,19 @@ struct BoughtItemsView: View {
     
     // Returns a color adjusted for the theme mode and user settings
     private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
-        let theme = settings[0].themeMode
-        let elementOpacity = settings[0].elementOpacity
+        let theme = settings.themeMode
+        let elementOpacity = settings.elementOpacity
 
-        switch theme {
-        case "dark":
+        switch ThemeMode(rawValue: theme) {
+        case .dark:
             return darkModeColor.opacity(0.8)
-        case "light":
+        case .light:
             return lightModeColor.opacity(elementOpacity)
-        case "system":
+        case .system:
             return colorScheme == .dark
                 ? darkModeColor.opacity(0.8)
                 : lightModeColor.opacity(elementOpacity)
-        default:
+        case nil:
             return lightModeColor.opacity(elementOpacity)
         }
     }

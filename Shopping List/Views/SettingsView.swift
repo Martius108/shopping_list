@@ -29,13 +29,13 @@ struct SettingsView: View {
             // Theme Mode Picker Section
             Section(header: Text("Theme Mode")) {
                 Picker("Select Theme", selection: $settings.themeMode) {
-                    Text("System").tag("system")
-                    Text("Light").tag("light")
-                    Text("Dark").tag("dark")
+                    Text("System").tag(ThemeMode.system.rawValue)
+                    Text("Light").tag(ThemeMode.light.rawValue)
+                    Text("Dark").tag(ThemeMode.dark.rawValue)
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .onChange(of: settings.themeMode) { oldValue, newValue in
-                    settings.themeMode = newValue
+                    settings.themeMode = ThemeMode(rawValue: newValue)?.rawValue ?? ThemeMode.system.rawValue
                     do {
                         try modelContext.save()
                         print("Theme mode changed from \(oldValue) to \(newValue)")
@@ -98,6 +98,7 @@ struct SettingsView: View {
                     set: { newColor in
                         // Reset background image when a new color is chosen
                         settings.backgroundImageData = nil
+                        selectedImage = nil
                         settings.backgroundColor = newColor.toHex()
                         do {
                             try modelContext.save()
@@ -112,6 +113,11 @@ struct SettingsView: View {
         .sheet(isPresented: $showImagePicker) {
             // Present the native image picker
             ImagePicker(image: $selectedImage)
+        }
+        .onAppear {
+            if let backgroundImageData = settings.backgroundImageData {
+                selectedImage = UIImage(data: backgroundImageData)
+            }
         }
         .navigationTitle("Settings")
     }

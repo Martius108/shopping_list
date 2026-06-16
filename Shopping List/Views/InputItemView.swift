@@ -46,44 +46,20 @@ struct InputItemView: View {
             .cornerRadius(8)
             .padding(.horizontal)
             .onChange(of: newItem) {
-                // Capitalize the first letter of the input
-                newItem = newItem.prefix(1).uppercased() + newItem.dropFirst()
+                let displayName = ShoppingListLogic.displayName(for: newItem)
+                if newItem != displayName {
+                    newItem = displayName
+                }
 
                 // Update suggestions based on current input
-                let suggestions = try? modelContext.fetch(FetchDescriptor<ShopItem>()).filter {
-                    !newItem.isEmpty && $0.name.lowercased().hasPrefix(newItem.lowercased())
-                }
-                self.filteredSuggestions = suggestions?.map { $0.name } ?? []
+                let items = (try? modelContext.fetch(FetchDescriptor<ShopItem>())) ?? []
+                filteredSuggestions = ShoppingListLogic.suggestions(
+                    for: newItem,
+                    from: items.map(\.name)
+                )
             }
             .onSubmit {
-                guard !newItem.isEmpty else { return }
-
-                let newItemName = newItem
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                    .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
-
-                guard !newItemName.isEmpty else { return }
-
-                do {
-                    let allItems = try modelContext.fetch(FetchDescriptor<ShopItem>())
-                    if let match = allItems.first(where: { $0.name.lowercased() == newItemName.lowercased() }) {
-                        if match.isBought {
-                            match.isBought = false
-                            try modelContext.save()
-                        }
-                        newItem = ""
-                        filteredSuggestions = []
-                        return
-                    }
-
-                    let item = ShopItem(name: newItemName, amount: 1, isBought: false, createdAt: Date())
-                    modelContext.insert(item)
-                    try modelContext.save()
-                    newItem = ""
-                    filteredSuggestions = []
-                } catch {
-                    print("Error: \(error.localizedDescription)")
-                }
+                addOrReactivateItem(named: newItem)
             }
 
         // Display up to 3 suggestions below the input field
@@ -96,28 +72,8 @@ struct InputItemView: View {
                         .font(.system(size: 17))
                         .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
                         .onTapGesture {
-                            do {
-                                let allItems = try modelContext.fetch(FetchDescriptor<ShopItem>())
-                                if let match = allItems.first(where: { $0.name.lowercased() == suggestion.lowercased() }) {
-                                    if match.isBought {
-                                        match.isBought = false
-                                        try modelContext.save()
-                                    }
-                                    newItem = ""
-                                    filteredSuggestions = []
-                                    isTextFieldFocused = false
-                                    return
-                                }
-
-                                let item = ShopItem(name: suggestion, amount: 1, isBought: false, createdAt: Date())
-                                modelContext.insert(item)
-                                try modelContext.save()
-                                newItem = ""
-                                filteredSuggestions = []
-                                isTextFieldFocused = false
-                            } catch {
-                                print("Error: \(error.localizedDescription)")
-                            }
+                            addOrReactivateItem(named: suggestion)
+                            isTextFieldFocused = false
                         }
                     // Insert a divider between suggestions
                     if index < filteredSuggestions.prefix(3).count - 1 {
@@ -131,6 +87,36 @@ struct InputItemView: View {
             .cornerRadius(8)
         }
     }
+
+    private func addOrReactivateItem(named value: String) {
+        let newItemName = ShoppingListLogic.displayName(for: value)
+        guard !newItemName.isEmpty else { return }
+
+        do {
+            let allItems = try modelContext.fetch(FetchDescriptor<ShopItem>())
+            if let match = allItems.first(where: { ShoppingListLogic.matches($0.name, newItemName) }) {
+                if match.isBought {
+                    match.isBought = false
+                    match.createdAt = Date()
+                    try modelContext.save()
+                }
+                clearInput()
+                return
+            }
+
+            let item = ShopItem(name: newItemName, amount: 1, isBought: false, createdAt: Date())
+            modelContext.insert(item)
+            try modelContext.save()
+            clearInput()
+        } catch {
+            print("Error: \(error.localizedDescription)")
+        }
+    }
+
+    private func clearInput() {
+        newItem = ""
+        filteredSuggestions = []
+    }
     
     // Utility function to return themed color based on user settings and system theme
     private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
@@ -141,16 +127,16 @@ struct InputItemView: View {
         let theme = settings.themeMode
         let elementOpacity = settings.elementOpacity
 
-        switch theme {
-        case "dark":
+        switch ThemeMode(rawValue: theme) {
+        case .dark:
             return darkModeColor.opacity(0.8)
-        case "light":
+        case .light:
             return lightModeColor.opacity(elementOpacity)
-        case "system":
+        case .system:
             return colorScheme == .dark
                 ? darkModeColor.opacity(0.8)
                 : lightModeColor.opacity(elementOpacity)
-        default:
+        case nil:
             return lightModeColor.opacity(elementOpacity)
         }
     }

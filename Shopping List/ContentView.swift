@@ -41,7 +41,7 @@ struct ContentView: View {
     // Query to retrieve and reactively update the list of shopping items, sorted by name
     @Query(sort: \ShopItem.name) var itemsList: [ShopItem]
     
-    // Query to retrieve the view settings stored in iCloud
+    // Query to retrieve the view settings stored locally or via SwiftData sync if enabled
     @Query var settingsList: [ViewSettings]
         
     // Local state for the currently active settings
@@ -73,9 +73,9 @@ struct ContentView: View {
                         ScrollView {
                             VStack(spacing: 0) {
                                 // View listing items that need to be bought
-                                ShopItemsView(items: itemsList, settings: settingsList)
+                                ShopItemsView(items: itemsList, settings: settings)
                                 // View listing items that have already been bought
-                                BoughtItemsView(items: itemsList, settings: settingsList)
+                                BoughtItemsView(items: itemsList, settings: settings)
                             }
                         }
                         .padding(.top)
@@ -94,10 +94,13 @@ struct ContentView: View {
                             isShowingSettings = true
                         } label: {
                             Image(systemName: "gear")
-                                .font(.title2)
-                                .padding(.bottom, 12)
-                                .padding(.trailing, 4)
+                                .font(.system(size: 19, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 34, height: 34)
+                                .contentShape(Circle())
                         }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Settings")
                     }
                 }
                 .navigationDestination(isPresented: $isShowingSettings) {

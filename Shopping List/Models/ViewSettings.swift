@@ -12,16 +12,16 @@ import SwiftData
 // Model class holding the data for user settings
 final class ViewSettings {
 
-    var themeMode: String = "system"
+    var themeMode: String = ThemeMode.system.rawValue
     var backgroundImageData: Data? = nil
-    var backgroundColor: String = "#FFFFFF"
-    var elementOpacity: Double = 0.0
+    var backgroundColor: String = "#F5E4B5"
+    var elementOpacity: Double = 0.7
 
-    init(themeMode: String = "system", backgroundImageData: Data? = nil, backgroundColor: String = "#F5E4B5", elementOpacity: Double = 0.7) {
+    init(themeMode: String = ThemeMode.system.rawValue, backgroundImageData: Data? = nil, backgroundColor: String = "#F5E4B5", elementOpacity: Double = 0.7) {
         
-        self.themeMode = themeMode
+        self.themeMode = ThemeMode(rawValue: themeMode)?.rawValue ?? ThemeMode.system.rawValue
         self.backgroundImageData = backgroundImageData
         self.backgroundColor = backgroundColor
-        self.elementOpacity = elementOpacity
+        self.elementOpacity = min(max(elementOpacity, 0), 1)
     }
 }

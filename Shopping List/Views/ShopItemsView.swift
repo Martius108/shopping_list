@@ -18,7 +18,7 @@ struct ShopItemsView: View {
     @Environment(\.colorScheme) var colorScheme
     // Items passed in from the main view
     var items: [ShopItem]
-    var settings: [ViewSettings]
+    var settings: ViewSettings
     
     @State private var editingItemID: UUID?
     @State private var editedName: String = ""
@@ -33,7 +33,7 @@ struct ShopItemsView: View {
             .frame(maxWidth: 0.92 * UIScreen.main.bounds.width, alignment: .leading)
             .padding(.bottom, 8)
         ) {
-            ForEach(items.filter { !$0.isBought}) { item in
+            ForEach(ShoppingListLogic.activeItems(from: items)) { item in
                 // Row layout for each shopping item
                 HStack {
                     // Display the quantity if greater than 1
@@ -45,12 +45,7 @@ struct ShopItemsView: View {
                     // Display the item name or TextField for editing
                     if editingItemID == item.id {
                         TextField("Item name", text: $editedName, onCommit: {
-                            item.name = editedName
-                            do {
-                                try modelContext.save()
-                            } catch {
-                                print("Error while saving edited name: \(error.localizedDescription)")
-                            }
+                            saveEditedName(for: item)
                             editingItemID = nil
                         })
                         .font(.system(size: 18))
@@ -144,30 +139,46 @@ struct ShopItemsView: View {
                 )
             }
             .onDelete { indexSet in
+                let activeItems = ShoppingListLogic.activeItems(from: items)
                 for index in indexSet {
-                    let item = items.filter { !$0.isBought }[index]
+                    let item = activeItems[index]
                     modelContext.delete(item)
                 }
                 try? modelContext.save()
             }
         }
     }
+
+    private func saveEditedName(for item: ShopItem) {
+        let name = ShoppingListLogic.displayName(for: editedName)
+        guard !name.isEmpty else {
+            editingItemID = nil
+            return
+        }
+
+        item.name = name
+        do {
+            try modelContext.save()
+        } catch {
+            print("Error while saving edited name: \(error.localizedDescription)")
+        }
+    }
     
     // Returns a color adjusted for the current theme and user settings
     private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
-        let theme = settings[0].themeMode
-        let elementOpacity = settings[0].elementOpacity
+        let theme = settings.themeMode
+        let elementOpacity = settings.elementOpacity
 
-        switch theme {
-        case "dark":
+        switch ThemeMode(rawValue: theme) {
+        case .dark:
             return darkModeColor.opacity(0.8)
-        case "light":
+        case .light:
             return lightModeColor.opacity(elementOpacity)
-        case "system":
+        case .system:
             return colorScheme == .dark
                 ? darkModeColor.opacity(0.8)
                 : lightModeColor.opacity(elementOpacity)
-        default:
+        case nil:
             return lightModeColor.opacity(elementOpacity)
         }
     }
