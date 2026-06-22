@@ -24,6 +24,7 @@ struct InputItemView: View {
     @Binding var settings: ViewSettings?
     @Binding var newItem: String
     @Binding var filteredSuggestions: [String]
+    var contentWidth: CGFloat
 
     var body: some View {
 
@@ -32,7 +33,7 @@ struct InputItemView: View {
             .focused($isTextFieldFocused)
             .padding()
             .background(themedColor(darkModeColor: .black, lightModeColor: .white))
-            .frame(maxWidth: 0.9 * UIScreen.main.bounds.width, maxHeight: 40)
+            .frame(maxWidth: contentWidth, maxHeight: 40)
             .overlay(
                 Text("I need")
                     .foregroundColor(themedColor(darkModeColor: .gray, lightModeColor: .gray))
@@ -82,7 +83,7 @@ struct InputItemView: View {
                     }
                 }
             }
-            .frame(maxWidth: 0.9 * UIScreen.main.bounds.width, alignment: .leading)
+            .frame(maxWidth: contentWidth, alignment: .leading)
             .background(themedColor(darkModeColor: .black, lightModeColor: .white))
             .cornerRadius(8)
         }

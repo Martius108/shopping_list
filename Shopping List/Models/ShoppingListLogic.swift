@@ -36,7 +36,13 @@ enum ShoppingListLogic {
 
         var seen = Set<String>()
         return itemNames
-            .filter { normalizedName($0).localizedCaseInsensitiveContains(query) }
+            .filter {
+                normalizedName($0).range(
+                    of: query,
+                    options: [.caseInsensitive, .anchored, .diacriticInsensitive],
+                    locale: .current
+                ) != nil
+            }
             .compactMap { name in
                 let normalized = normalizedName(name)
                 let key = normalized.lowercased()

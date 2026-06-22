@@ -19,6 +19,7 @@ struct ShopItemsView: View {
     // Items passed in from the main view
     var items: [ShopItem]
     var settings: ViewSettings
+    var contentWidth: CGFloat
     
     @State private var editingItemID: UUID?
     @State private var editedName: String = ""
@@ -30,7 +31,7 @@ struct ShopItemsView: View {
                     Text("To buy")
             .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
             .font(.system(size: 17, weight: .bold))
-            .frame(maxWidth: 0.92 * UIScreen.main.bounds.width, alignment: .leading)
+            .frame(maxWidth: contentWidth, alignment: .leading)
             .padding(.bottom, 8)
         ) {
             ForEach(ShoppingListLogic.activeItems(from: items)) { item in
@@ -131,7 +132,7 @@ struct ShopItemsView: View {
                 .padding(.bottom, 9)
                 .padding(.leading, 12)
                 .padding(.trailing, 8)
-                .frame(maxWidth: 0.92 * UIScreen.main.bounds.width)
+                .frame(maxWidth: contentWidth)
                 .background(
                     RoundedRectangle(cornerRadius: 8)
                         .fill(themedColor(darkModeColor: .black, lightModeColor: .white))

@@ -20,6 +20,7 @@ struct BoughtItemsView: View {
     var items: [ShopItem]
     // Settings passed from the parent view
     var settings: ViewSettings
+    var contentWidth: CGFloat
 
     var body: some View {
         // Section displaying the list of bought items
@@ -35,7 +36,7 @@ struct BoughtItemsView: View {
         Text("Recently bought")
             .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
             .font(.system(size: 17, weight: .bold))
-            .frame(maxWidth: 0.92 * UIScreen.main.bounds.width, alignment: .leading)
+            .frame(maxWidth: contentWidth, alignment: .leading)
             .padding(.bottom, 8)
             .padding(.top, 15)
     }
@@ -71,7 +72,7 @@ struct BoughtItemsView: View {
         .padding(.bottom, 11)
         .padding(.leading, 12)
         .padding(.trailing, 8)
-        .frame(maxWidth: 0.92 * UIScreen.main.bounds.width)
+        .frame(maxWidth: contentWidth)
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .fill(themedColor(darkModeColor: .black, lightModeColor: .white))

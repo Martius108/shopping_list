@@ -18,7 +18,7 @@ final class ShoppingListLogicTests: XCTestCase {
     func testSuggestionsAreUniqueCaseInsensitiveSortedAndLimited() {
         let suggestions = ShoppingListLogic.suggestions(
             for: "mi",
-            from: ["Milk", "mineral water", "milk", "Mint", "Miso", "Bread"],
+            from: ["Milk", "mineral water", "milk", "Mint", "Miso", "Oat milk", "Bread"],
             limit: 3
         )
 

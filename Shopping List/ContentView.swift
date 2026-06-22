@@ -64,27 +64,34 @@ struct ContentView: View {
                         FixedBackgroundView(backgroundColor: Color(hex: settings.backgroundColor))
                     }
 
-                    VStack(spacing: 16) {
-                        // Input field and suggestion list for adding new items
-                        InputItemView(
-                            settings: $settings, newItem: $newItem,
-                            filteredSuggestions: $filteredSuggestions
-                        )
-                        ScrollView {
-                            VStack(spacing: 0) {
-                                // View listing items that need to be bought
-                                ShopItemsView(items: itemsList, settings: settings)
-                                // View listing items that have already been bought
-                                BoughtItemsView(items: itemsList, settings: settings)
+                    GeometryReader { geometry in
+                        let contentWidth = contentWidth(for: geometry.size)
+
+                        VStack(spacing: 16) {
+                            // Input field and suggestion list for adding new items
+                            InputItemView(
+                                settings: $settings, newItem: $newItem,
+                                filteredSuggestions: $filteredSuggestions,
+                                contentWidth: contentWidth
+                            )
+                            ScrollView {
+                                VStack(spacing: 0) {
+                                    // View listing items that need to be bought
+                                    ShopItemsView(items: itemsList, settings: settings, contentWidth: contentWidth)
+                                    // View listing items that have already been bought
+                                    BoughtItemsView(items: itemsList, settings: settings, contentWidth: contentWidth)
+                                }
                             }
+                            .padding(.top)
                         }
-                        .padding(.top)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .navigationTitle("Shopping List")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -118,6 +125,11 @@ struct ContentView: View {
                     }
             }
         }
+    }
+
+    private func contentWidth(for size: CGSize) -> CGFloat {
+        let widthRatio = size.width > size.height ? 0.60 : 0.92
+        return size.width * widthRatio
     }
     
     // Function to load the view settings from the cloud or create new settings if none exist
