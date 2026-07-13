@@ -1,69 +1,73 @@
 # Shopping List
 
-## English
+Shopping List is a simple, customizable shopping list for iPhone and iPad. The app is available in German and English.
 
-Shopping List is an iOS app for creating and managing a simple shopping list on iPhone and iPad.
+## Features
 
-The app lets users add products, change quantities, mark items as bought, reactivate recently bought items, and personalize the appearance with themes, opacity, background colors, or a selected background image.
-
-### Features
-
-- Add products to a shopping list
-- Search suggestions for existing products while typing
-- Increase or decrease item quantities
-- Mark products as bought
-- Show recently bought products
-- Reactivate bought products
-- Edit product names
-- Light, dark, and system theme modes
-- Custom background color and element opacity
-- Optional custom background image from the photo library
-- Local storage through SwiftData
-- iCloud sync through CloudKit when available and enabled for the app
+- Add, rename, and delete products
+- Suggestions from existing products while typing
+- Increase or decrease quantities
+- Mark products as bought and reactivate recently bought items
+- Light, dark, and system appearance
+- Custom background color, element opacity, and optional photo background
+- Local storage with SwiftData
+- Automatic synchronization through the user's private iCloud account when iCloud is available and enabled
 - iPhone and iPad support in portrait and landscape orientation
 
-### Privacy
-
-The privacy policy is available in English and German:
+## Privacy and Support
 
 - [Privacy Policy English](docs/privacy-en.md)
 - [Datenschutzerklärung Deutsch](docs/privacy-de.md)
+- [Support](docs/support.html)
 
-### Notes
+Shopping items and settings are stored with SwiftData. When iCloud is enabled for the app, they may synchronize through the user's private CloudKit database. Photo library access is requested only when the user selects a custom background image.
 
-Shopping List stores shopping items and app settings using SwiftData. If iCloud is available and enabled for the app, this data may sync through the user's private iCloud account using CloudKit. The app can access the photo library only when the user selects a custom background image.
+## App Store Texts
 
----
+### Deutsch
 
-## Deutsch
+**Untertitel**
 
-Shopping List ist eine iOS-App zum Erstellen und Verwalten einer einfachen Einkaufsliste auf iPhone und iPad.
+`Einfach einkaufen und teilen`
 
-Die App erlaubt es Nutzern, Produkte hinzuzufügen, Mengen zu ändern, Artikel als gekauft zu markieren, zuletzt gekaufte Artikel wieder zu aktivieren und das Aussehen mit Themes, Transparenz, Hintergrundfarben oder einem ausgewählten Hintergrundbild anzupassen.
+**Beschreibung**
 
-### Funktionen
+```text
+Shopping List ist eine übersichtliche Einkaufsliste für iPhone und iPad.
 
-- Produkte zur Einkaufsliste hinzufügen
-- Suchvorschläge für vorhandene Produkte während der Eingabe
-- Produktmengen erhöhen oder verringern
-- Produkte als gekauft markieren
-- Zuletzt gekaufte Produkte anzeigen
-- Gekaufte Produkte wieder aktivieren
-- Produktnamen bearbeiten
-- Heller, dunkler und systemabhängiger Darstellungsmodus
-- Eigene Hintergrundfarbe und Element-Transparenz
-- Optionales Hintergrundbild aus der Fotobibliothek
-- Lokale Speicherung mit SwiftData
-- iCloud-Synchronisierung über CloudKit, wenn verfügbar und für die App aktiviert
-- Unterstützung für iPhone und iPad im Hoch- und Querformat
+Füge Produkte schnell hinzu, passe Mengen an und markiere erledigte Einkäufe. Bereits verwendete Produkte erscheinen während der Eingabe als Vorschläge. Zuletzt gekaufte Artikel lassen sich mit einem Tipp wieder auf die Liste setzen.
 
-### Datenschutz
+Gestalte deine Liste mit hellem, dunklem oder systemabhängigem Design, einer eigenen Hintergrundfarbe, anpassbarer Transparenz oder einem Bild aus deiner Fotobibliothek.
 
-Die Datenschutzerklärung ist auf Deutsch und Englisch verfügbar:
+Wenn iCloud für die App aktiviert ist, werden deine Liste und Einstellungen automatisch über deinen privaten iCloud-Account zwischen deinen Geräten synchronisiert.
+```
 
-- [Datenschutzerklärung Deutsch](docs/privacy-de.md)
-- [Privacy Policy English](docs/privacy-en.md)
+**Neu in dieser Version**
 
-### Hinweise
+```text
+Die iCloud-Synchronisierung kann Änderungen jetzt auch während der Nutzung im Hintergrund übernehmen. Außerdem wurden Datenschutz- und Supportinformationen ergänzt.
+```
 
-Shopping List speichert Einkaufsartikel und App-Einstellungen mit SwiftData. Wenn iCloud verfügbar und für die App aktiviert ist, können diese Daten über den privaten iCloud-Account des Nutzers mit CloudKit synchronisiert werden. Die App kann nur dann auf die Fotobibliothek zugreifen, wenn der Nutzer ein eigenes Hintergrundbild auswählt.
+### English
+
+**Subtitle**
+
+`A simple synced grocery list`
+
+**Description**
+
+```text
+Shopping List is a clear and convenient grocery list for iPhone and iPad.
+
+Quickly add products, adjust quantities, and mark completed purchases. Previously used products appear as suggestions while you type, and recently bought items can be returned to the list with one tap.
+
+Personalize your list with light, dark, or system appearance, a custom background color, adjustable opacity, or an image from your photo library.
+
+When iCloud is enabled for the app, your list and settings automatically sync between your devices through your private iCloud account.
+```
+
+**What's New**
+
+```text
+iCloud synchronization can now receive changes in the background while the app is in use. Privacy and support information has also been added.
+```
