@@ -13,7 +13,7 @@ import SwiftData
 final class ViewSettings {
 
     var themeMode: String = ThemeMode.system.rawValue
-    var backgroundImageData: Data? = nil
+    @Attribute(.externalStorage) var backgroundImageData: Data?
     var backgroundColor: String = "#F5E4B5"
     var elementOpacity: Double = 0.7
 
