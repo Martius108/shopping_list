@@ -92,9 +92,14 @@ struct ContentView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .navigationTitle("Shopping List")
+                .navigationTitle("")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("Shopping List")
+                            .font(.title2.bold())
+                            .foregroundStyle(.tint)
+                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         // Button to open the settings view
                         Button {

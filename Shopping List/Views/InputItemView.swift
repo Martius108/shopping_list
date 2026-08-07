@@ -32,11 +32,11 @@ struct InputItemView: View {
         TextField("", text: $newItem)
             .focused($isTextFieldFocused)
             .padding()
-            .background(themedColor(darkModeColor: .black, lightModeColor: .white))
+            .background(elementColor(darkModeColor: .black, lightModeColor: .white))
             .frame(maxWidth: contentWidth, maxHeight: 40)
             .overlay(
                 Text("I need")
-                    .foregroundColor(themedColor(darkModeColor: .gray, lightModeColor: .gray))
+                    .foregroundStyle(.secondary)
                     .opacity(newItem.isEmpty ? 1 : 0)
                     .padding(.leading, 14)
                     .allowsHitTesting(false),
@@ -84,7 +84,7 @@ struct InputItemView: View {
                 }
             }
             .frame(maxWidth: contentWidth, alignment: .leading)
-            .background(themedColor(darkModeColor: .black, lightModeColor: .white))
+            .background(elementColor(darkModeColor: .black, lightModeColor: .white))
             .cornerRadius(8)
         }
     }
@@ -122,23 +122,27 @@ struct InputItemView: View {
     // Utility function to return themed color based on user settings and system theme
     private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
         guard let settings = settings else {
-            return lightModeColor.opacity(1.0)
+            return lightModeColor
         }
         
         let theme = settings.themeMode
-        let elementOpacity = settings.elementOpacity
 
         switch ThemeMode(rawValue: theme) {
         case .dark:
-            return darkModeColor.opacity(0.8)
+            return darkModeColor
         case .light:
-            return lightModeColor.opacity(elementOpacity)
+            return lightModeColor
         case .system:
             return colorScheme == .dark
-                ? darkModeColor.opacity(0.8)
-                : lightModeColor.opacity(elementOpacity)
+                ? darkModeColor
+                : lightModeColor
         case nil:
-            return lightModeColor.opacity(elementOpacity)
+            return lightModeColor
         }
+    }
+
+    private func elementColor(darkModeColor: Color, lightModeColor: Color) -> Color {
+        themedColor(darkModeColor: darkModeColor, lightModeColor: lightModeColor)
+            .opacity(settings?.elementOpacity ?? 1)
     }
 }

@@ -7,6 +7,21 @@
 
 import SwiftUI
 
+extension View {
+    @ViewBuilder
+    func shoppingImageLabelStyle(_ imageBackground: Bool, fallbackColor: Color) -> some View {
+        if imageBackground {
+            self
+                .foregroundStyle(.tint)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .background(.bar, in: Capsule())
+        } else {
+            self.foregroundStyle(fallbackColor)
+        }
+    }
+}
+
 // Extension to create a Color from a hex string and to convert a Color back to a hex string
 extension Color {
     

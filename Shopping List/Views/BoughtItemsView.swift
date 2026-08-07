@@ -34,8 +34,11 @@ struct BoughtItemsView: View {
     // Header for the "Recently bought" section
     private var boughtItemsHeader: some View {
         Text("Recently bought")
-            .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
             .font(.system(size: 17, weight: .bold))
+            .shoppingImageLabelStyle(
+                settings.backgroundImageData != nil,
+                fallbackColor: themedColor(darkModeColor: .white, lightModeColor: .black)
+            )
             .frame(maxWidth: contentWidth, alignment: .leading)
             .padding(.bottom, 8)
             .padding(.top, 15)
@@ -75,7 +78,7 @@ struct BoughtItemsView: View {
         .frame(maxWidth: contentWidth)
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(themedColor(darkModeColor: .black, lightModeColor: .white))
+                .fill(elementColor(darkModeColor: .black, lightModeColor: .white))
                 .padding(.top, 3)
         )
     }
@@ -83,19 +86,23 @@ struct BoughtItemsView: View {
     // Returns a color adjusted for the theme mode and user settings
     private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
         let theme = settings.themeMode
-        let elementOpacity = settings.elementOpacity
 
         switch ThemeMode(rawValue: theme) {
         case .dark:
-            return darkModeColor.opacity(0.8)
+            return darkModeColor
         case .light:
-            return lightModeColor.opacity(elementOpacity)
+            return lightModeColor
         case .system:
             return colorScheme == .dark
-                ? darkModeColor.opacity(0.8)
-                : lightModeColor.opacity(elementOpacity)
+                ? darkModeColor
+                : lightModeColor
         case nil:
-            return lightModeColor.opacity(elementOpacity)
+            return lightModeColor
         }
+    }
+
+    private func elementColor(darkModeColor: Color, lightModeColor: Color) -> Color {
+        themedColor(darkModeColor: darkModeColor, lightModeColor: lightModeColor)
+            .opacity(settings.elementOpacity)
     }
 }
