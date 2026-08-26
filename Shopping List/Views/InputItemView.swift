@@ -47,11 +47,6 @@ struct InputItemView: View {
             .cornerRadius(8)
             .padding(.horizontal)
             .onChange(of: newItem) {
-                let displayName = ShoppingListLogic.displayName(for: newItem)
-                if newItem != displayName {
-                    newItem = displayName
-                }
-
                 // Update suggestions based on current input
                 let items = (try? modelContext.fetch(FetchDescriptor<ShopItem>())) ?? []
                 filteredSuggestions = ShoppingListLogic.suggestions(
