@@ -14,11 +14,13 @@ struct ShopItemsView: View {
     
     // Access the model context to interact with the local database
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var shareManager: ShoppingListShareManager
     // Access the current color scheme (light/dark mode) from the environment
     @Environment(\.colorScheme) var colorScheme
     // Items passed in from the main view
     var items: [ShopItem]
     var settings: ViewSettings
+    var list: ShoppingListEntry
     var contentWidth: CGFloat
     
     @State private var editingItemID: UUID?
@@ -29,10 +31,10 @@ struct ShopItemsView: View {
         // Section displaying the list of items that are not bought yet
         Section(header:
                     Text("To buy")
-            .font(.system(size: 17, weight: .bold))
+            .font(.subheadline.weight(.semibold))
             .shoppingImageLabelStyle(
                 settings.backgroundImageData != nil,
-                fallbackColor: themedColor(darkModeColor: .white, lightModeColor: .black)
+                fallbackColor: sectionHeaderColor
             )
             .frame(maxWidth: contentWidth, alignment: .leading)
             .padding(.bottom, 8)
@@ -74,8 +76,10 @@ struct ShopItemsView: View {
                                 withAnimation {
                                     item.createdAt = Date()
                                     item.isBought = true  // Mark item as bought
+                                    item.updatedAt = Date()
                                     do {
                                         try modelContext.save()
+                                        syncSharedList()
                                     } catch {
                                         print("Error while saving: \(error.localizedDescription)")
                                     }
@@ -83,8 +87,10 @@ struct ShopItemsView: View {
                             } else {
                                 let newAmount = item.amount - 1
                                 item.amount = newAmount  // Decrease amount
+                                item.updatedAt = Date()
                                 do {
                                     try modelContext.save()
+                                    syncSharedList()
                                 } catch {
                                     print("Error while saving: \(error.localizedDescription)")
                                 }
@@ -101,7 +107,9 @@ struct ShopItemsView: View {
                         Button(action: {
                             let newAmount = item.amount + 1
                             item.amount = newAmount
+                            item.updatedAt = Date()
                             try? modelContext.save() // Save without explicit error handling
+                            syncSharedList()
                         }) {
                             Image(systemName: "plus.circle.fill")
                                 .imageScale(.large)
@@ -115,8 +123,10 @@ struct ShopItemsView: View {
                             withAnimation {
                                 item.createdAt = Date()
                                 item.isBought = true
+                                item.updatedAt = Date()
                                 do {
                                     try modelContext.save()
+                                    syncSharedList()
                                 } catch {
                                     print("Error while saving: \(error.localizedDescription)")
                                 }
@@ -137,7 +147,7 @@ struct ShopItemsView: View {
                 .padding(.trailing, 8)
                 .frame(maxWidth: contentWidth)
                 .background(
-                    RoundedRectangle(cornerRadius: 8)
+                    RoundedRectangle(cornerRadius: 12)
                         .fill(elementColor(darkModeColor: .black, lightModeColor: .white))
                         .padding(.top, 3)
                 )
@@ -146,9 +156,11 @@ struct ShopItemsView: View {
                 let activeItems = ShoppingListLogic.activeItems(from: items)
                 for index in indexSet {
                     let item = activeItems[index]
-                    modelContext.delete(item)
+                    item.deletedAt = Date()
+                    item.updatedAt = Date()
                 }
                 try? modelContext.save()
+                syncSharedList()
             }
         }
     }
@@ -161,10 +173,18 @@ struct ShopItemsView: View {
         }
 
         item.name = name
+        item.updatedAt = Date()
         do {
             try modelContext.save()
+            syncSharedList()
         } catch {
             print("Error while saving edited name: \(error.localizedDescription)")
+        }
+    }
+
+    private func syncSharedList() {
+        Task {
+            await shareManager.sync(list: list, modelContext: modelContext)
         }
     }
     
@@ -189,5 +209,11 @@ struct ShopItemsView: View {
     private func elementColor(darkModeColor: Color, lightModeColor: Color) -> Color {
         themedColor(darkModeColor: darkModeColor, lightModeColor: lightModeColor)
             .opacity(settings.elementOpacity)
+    }
+
+    private var sectionHeaderColor: Color {
+        settings.backgroundColor == ViewSettings.systemBackgroundColor
+            ? .secondary
+            : themedColor(darkModeColor: .white, lightModeColor: .black)
     }
 }

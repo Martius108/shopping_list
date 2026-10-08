@@ -14,14 +14,16 @@ struct InputItemView: View {
     
     // Access the model context to interact with the local database
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var shareManager: ShoppingListShareManager
     // Query to fetch all shopping items, sorted by name
     @Query(sort: \ShopItem.name) private var items: [ShopItem]
     // Access the current color scheme (light/dark mode)
     @Environment(\.colorScheme) var colorScheme
     // Add a focus to the text field (to make the keyboard disappear)
     @FocusState private var isTextFieldFocused: Bool
-    // Bindings to settings and user input states
-    @Binding var settings: ViewSettings?
+    // Settings and list for the current item input
+    var settings: ViewSettings
+    var list: ShoppingListEntry
     @Binding var newItem: String
     @Binding var filteredSuggestions: [String]
     var contentWidth: CGFloat
@@ -44,11 +46,12 @@ struct InputItemView: View {
             )
             .font(.system(size: 18))
             .foregroundColor(themedColor(darkModeColor: .white, lightModeColor: .black))
-            .cornerRadius(8)
+            .cornerRadius(12)
             .padding(.horizontal)
             .onChange(of: newItem) {
                 // Update suggestions based on current input
-                let items = (try? modelContext.fetch(FetchDescriptor<ShopItem>())) ?? []
+                let items = ((try? modelContext.fetch(FetchDescriptor<ShopItem>())) ?? [])
+                    .filter { $0.listID == list.id }
                 filteredSuggestions = ShoppingListLogic.suggestions(
                     for: newItem,
                     from: items.map(\.name)
@@ -80,7 +83,7 @@ struct InputItemView: View {
             }
             .frame(maxWidth: contentWidth, alignment: .leading)
             .background(elementColor(darkModeColor: .black, lightModeColor: .white))
-            .cornerRadius(8)
+            .cornerRadius(12)
         }
     }
 
@@ -90,19 +93,33 @@ struct InputItemView: View {
 
         do {
             let allItems = try modelContext.fetch(FetchDescriptor<ShopItem>())
-            if let match = allItems.first(where: { ShoppingListLogic.matches($0.name, newItemName) }) {
-                if match.isBought {
+            if let match = allItems.first(where: {
+                $0.listID == list.id
+                    && ShoppingListLogic.matches($0.name, newItemName)
+            }) {
+                if match.isBought || match.deletedAt != nil {
                     match.isBought = false
+                    match.deletedAt = nil
                     match.createdAt = Date()
+                    match.updatedAt = Date()
                     try modelContext.save()
+                    syncSharedList()
                 }
                 clearInput()
                 return
             }
 
-            let item = ShopItem(name: newItemName, amount: 1, isBought: false, createdAt: Date())
+            let item = ShopItem(
+                name: newItemName,
+                amount: 1,
+                isBought: false,
+                createdAt: Date(),
+                listID: list.id,
+                sharedZoneName: list.sharedZoneName
+            )
             modelContext.insert(item)
             try modelContext.save()
+            syncSharedList()
             clearInput()
         } catch {
             print("Error: \(error.localizedDescription)")
@@ -113,13 +130,15 @@ struct InputItemView: View {
         newItem = ""
         filteredSuggestions = []
     }
+
+    private func syncSharedList() {
+        Task {
+            await shareManager.sync(list: list, modelContext: modelContext)
+        }
+    }
     
     // Utility function to return themed color based on user settings and system theme
     private func themedColor(darkModeColor: Color, lightModeColor: Color) -> Color {
-        guard let settings = settings else {
-            return lightModeColor
-        }
-        
         let theme = settings.themeMode
 
         switch ThemeMode(rawValue: theme) {
@@ -138,6 +157,6 @@ struct InputItemView: View {
 
     private func elementColor(darkModeColor: Color, lightModeColor: Color) -> Color {
         themedColor(darkModeColor: darkModeColor, lightModeColor: lightModeColor)
-            .opacity(settings?.elementOpacity ?? 1)
+            .opacity(settings.elementOpacity)
     }
 }

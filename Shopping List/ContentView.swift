@@ -1,24 +1,14 @@
-//
-//  ContentView.swift
-//  Shopping List
-//
-//  Created by Martin Lanius on 23.04.25.
-//
-
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 
-// Separate view to display either an image or a colored background, fixed to the screen size
 struct FixedBackgroundView: View {
-    
-    var image: UIImage? = nil
+    var image: UIImage?
     var backgroundColor: Color = .white
 
     var body: some View {
-        // Use GeometryReader to adapt the size without reacting to keyboard appearance
         GeometryReader { geometry in
-            if let image = image {
+            if let image {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
@@ -29,135 +19,255 @@ struct FixedBackgroundView: View {
                     .frame(width: geometry.size.width, height: geometry.size.height)
             }
         }
-        .edgesIgnoringSafeArea(.all) // Ensure the background covers the entire screen
+        .ignoresSafeArea()
     }
 }
 
-// Main view displaying the shopping list
 struct ContentView: View {
-    
-    // Access the model context to interact with the local database
-    @Environment(\.modelContext) private var modelContext: ModelContext
-    // Query to retrieve and reactively update the list of shopping items, sorted by name
-    @Query(sort: \ShopItem.name) var itemsList: [ShopItem]
-    
-    // Query to retrieve the view settings stored locally or via SwiftData sync if enabled
-    @Query var settingsList: [ViewSettings]
-        
-    // Local state for the currently active settings
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
+    @EnvironmentObject private var shareManager: ShoppingListShareManager
+    @Query(sort: \ShopItem.name) private var items: [ShopItem]
+    @Query(sort: \ShoppingListEntry.createdAt) private var lists: [ShoppingListEntry]
+    @Query private var storedSettings: [ViewSettings]
+
     @State private var settings: ViewSettings?
-    @State private var isShowingSettings: Bool = false
-    
-    // Local states for new item input and suggestion filtering
-    @State private var filteredSuggestions: [String] = []
-    @State private var newItem: String = ""
+    @State private var selectedTab = 0
 
     var body: some View {
-        NavigationStack {
-            if let settings = settings {
-                ZStack {
-                    if let backgroundImageData = settings.backgroundImageData, let image = UIImage(data: backgroundImageData) {
-                        // Display the selected background image
-                        FixedBackgroundView(image: image)
-                    } else {
-                        // Display a colored background if no image is set
-                        FixedBackgroundView(backgroundColor: Color(hex: settings.backgroundColor))
+        Group {
+            if let settings, let currentList {
+                TabView(selection: $selectedTab) {
+                    NavigationStack {
+                        CurrentShoppingListView(settings: settings, list: currentList, items: items)
                     }
+                    .tabItem {
+                        Image(systemName: "doc")
+                            .accessibilityLabel("Current List")
+                    }
+                    .tag(0)
 
-                    GeometryReader { geometry in
-                        let contentWidth = contentWidth(for: geometry.size)
+                    NavigationStack {
+                        AllShoppingListsView(settings: settings, selectedTab: $selectedTab)
+                    }
+                    .tabItem {
+                        Image(systemName: "doc.on.doc")
+                            .accessibilityLabel("All Lists")
+                    }
+                    .tag(1)
 
-                        VStack(spacing: 16) {
-                            // Input field and suggestion list for adding new items
-                            InputItemView(
-                                settings: $settings, newItem: $newItem,
-                                filteredSuggestions: $filteredSuggestions,
-                                contentWidth: contentWidth
+                    NavigationStack {
+                        SettingsView(
+                            settings: Binding(
+                                get: { settings },
+                                set: { self.settings = $0 }
                             )
-                            ScrollView {
-                                VStack(spacing: 0) {
-                                    // View listing items that need to be bought
-                                    ShopItemsView(items: itemsList, settings: settings, contentWidth: contentWidth)
-                                    // View listing items that have already been bought
-                                    BoughtItemsView(items: itemsList, settings: settings, contentWidth: contentWidth)
-                                }
-                            }
-                            .padding(.top)
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        )
                     }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    .tabItem {
+                        Image(systemName: "gearshape")
+                            .accessibilityLabel("Settings")
+                    }
+                    .tag(2)
+                }
+                .task {
+                    await consumeAcceptedShare(settings: settings)
+                    await shareManager.restoreCloudLists(settings: settings, modelContext: modelContext)
+                }
+                .onChange(of: scenePhase) { _, phase in
+                    guard phase == .active else { return }
+                    Task {
+                        await consumeAcceptedShare(settings: settings)
+                        await shareManager.restoreCloudLists(settings: settings, modelContext: modelContext)
+                        if let list = self.currentList {
+                            await shareManager.refresh(list: list)
+                            await shareManager.sync(list: list, modelContext: modelContext)
+                        }
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .navigationTitle("")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Text("Shopping List")
-                            .font(.title2.bold())
-                            .foregroundStyle(.tint)
+                .onReceive(NotificationCenter.default.publisher(for: .shoppingListShareAccepted)) { _ in
+                    Task {
+                        await consumeAcceptedShare(settings: settings)
                     }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        // Button to open the settings view
-                        Button {
-                            isShowingSettings = true
-                        } label: {
-                            Image(systemName: "gear")
-                                .font(.system(size: 19, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .frame(width: 34, height: 34)
-                                .contentShape(Circle())
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Settings")
-                    }
-                }
-                .navigationDestination(isPresented: $isShowingSettings) {
-                    // Open the settings view when the button is tapped
-                    SettingsView(settings: Binding(
-                        get: { settings },
-                        set: { self.settings = $0 }
-                    ))
                 }
             } else {
-                // Show a loading indicator while settings are being loaded
                 ProgressView("Loading settings ...")
-                    .onAppear {
-                        loadSettings()
-                    }
+                    .onAppear(perform: loadData)
             }
+        }
+        .preferredColorScheme(preferredColorScheme)
+        .onChange(of: items.count) { _, _ in
+            removeDuplicateItems()
+        }
+    }
+
+    private var currentList: ShoppingListEntry? {
+        let visibleLists = ShoppingListLogic.visibleLists(from: lists)
+        guard let currentListID = settings?.currentListID else { return visibleLists.first }
+        return visibleLists.first(where: { $0.id == currentListID }) ?? visibleLists.first
+    }
+
+    private var preferredColorScheme: ColorScheme? {
+        switch settings.flatMap({ ThemeMode(rawValue: $0.themeMode) }) {
+        case .light: .light
+        case .dark: .dark
+        case .system, nil: nil
+        }
+    }
+
+    private func loadData() {
+        do {
+            let settings = storedSettings.first ?? ViewSettings()
+            if storedSettings.isEmpty {
+                modelContext.insert(settings)
+            }
+            settings.migrateDefaultAppearanceIfNeeded()
+
+            var savedLists = try modelContext.fetch(FetchDescriptor<ShoppingListEntry>())
+            if savedLists.isEmpty {
+                let list = ShoppingListEntry(
+                    name: String(localized: "Shopping List"),
+                    sharedZoneName: settings.sharedZoneName,
+                    sharedZoneOwnerName: settings.sharedZoneOwnerName
+                )
+                modelContext.insert(list)
+                savedLists = [list]
+                settings.currentListID = list.id
+                for item in items {
+                    item.listID = list.id
+                }
+            } else if !savedLists.contains(where: {
+                $0.id == settings.currentListID && $0.replacedByListID == nil
+            }) {
+                settings.currentListID = ShoppingListLogic.visibleLists(from: savedLists).first?.id
+            }
+
+            if let currentListID = settings.currentListID {
+                for item in items where item.listID == nil {
+                    item.listID = currentListID
+                }
+            }
+
+            ShoppingListLogic.removeDuplicateItems(from: items, modelContext: modelContext)
+            try modelContext.save()
+            self.settings = settings
+        } catch {
+            print("Could not initialize shopping lists: \(error.localizedDescription)")
+        }
+    }
+
+    private func consumeAcceptedShare(settings: ViewSettings) async {
+        if await shareManager.consumeAcceptedShare(settings: settings, modelContext: modelContext) != nil {
+            selectedTab = 0
+        }
+    }
+
+    private func removeDuplicateItems() {
+        guard ShoppingListLogic.removeDuplicateItems(from: items, modelContext: modelContext) > 0 else {
+            return
+        }
+        do {
+            try modelContext.save()
+        } catch {
+            modelContext.rollback()
+            print("Could not consolidate duplicate shopping items: \(error.localizedDescription)")
+        }
+    }
+}
+
+private struct CurrentShoppingListView: View {
+    @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var shareManager: ShoppingListShareManager
+
+    let settings: ViewSettings
+    let list: ShoppingListEntry
+    let items: [ShopItem]
+
+    @State private var filteredSuggestions: [String] = []
+    @State private var newItem = ""
+
+    var body: some View {
+        ZStack {
+            if let data = settings.backgroundImageData, let image = UIImage(data: data) {
+                FixedBackgroundView(image: image)
+            } else {
+                FixedBackgroundView(backgroundColor: Color(shoppingBackground: settings.backgroundColor))
+            }
+
+            GeometryReader { geometry in
+                let contentWidth = contentWidth(for: geometry.size)
+                let visibleItems = ShoppingListLogic.visibleItems(from: items, listID: list.id)
+
+                VStack(spacing: 16) {
+                    InputItemView(
+                        settings: settings,
+                        list: list,
+                        newItem: $newItem,
+                        filteredSuggestions: $filteredSuggestions,
+                        contentWidth: contentWidth
+                    )
+
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ShopItemsView(
+                                items: visibleItems,
+                                settings: settings,
+                                list: list,
+                                contentWidth: contentWidth
+                            )
+                            BoughtItemsView(
+                                items: visibleItems,
+                                settings: settings,
+                                list: list,
+                                contentWidth: contentWidth
+                            )
+                        }
+                    }
+                    .padding(.top)
+                    .refreshable {
+                        await shareManager.sync(list: list, modelContext: modelContext)
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                UIApplication.shared.sendAction(
+                    #selector(UIResponder.resignFirstResponder),
+                    to: nil,
+                    from: nil,
+                    for: nil
+                )
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .navigationTitle(settings.backgroundImageData == nil ? list.name : "")
+        .navigationBarTitleDisplayMode(settings.backgroundImageData == nil ? .large : .inline)
+        .toolbar(settings.backgroundImageData == nil ? .visible : .hidden, for: .navigationBar)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if settings.backgroundImageData != nil {
+                Text(list.name)
+                    .font(.title2.bold())
+                    .shoppingImageLabelStyle(true, fallbackColor: .blue)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+                    .accessibilityAddTraits(.isHeader)
+            }
+        }
+        .task(id: list.id) {
+            await shareManager.refresh(list: list)
+            await shareManager.sync(list: list, modelContext: modelContext)
         }
     }
 
     private func contentWidth(for size: CGSize) -> CGFloat {
-        let widthRatio = size.width > size.height ? 0.60 : 0.92
-        return size.width * widthRatio
-    }
-    
-    // Function to load the view settings from the cloud or create new settings if none exist
-    private func loadSettings() {
-        if let existingSettings = settingsList.first {
-            settings = existingSettings
-        } else {
-            // Create new settings and save them to the cloud
-            let newSettings = ViewSettings()
-            modelContext.insert(newSettings)
-            do {
-                try modelContext.save()
-                print("Settings saved")
-                settings = newSettings
-                print("No existing settings found. Created new settings.")
-            } catch {
-                print("Failed to save new settings: \(error.localizedDescription)")
-            }
-        }
+        size.width * (size.width > size.height ? 0.60 : 0.92)
     }
 }
-// Preview for Xcode
+
 #Preview {
     ContentView()
-        .modelContainer(for: [ShopItem.self, ViewSettings.self])
+        .modelContainer(for: [ShopItem.self, ShoppingListEntry.self, ViewSettings.self])
+        .environmentObject(ShoppingListShareManager())
 }

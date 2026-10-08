@@ -24,6 +24,14 @@ extension View {
 
 // Extension to create a Color from a hex string and to convert a Color back to a hex string
 extension Color {
+
+    init(shoppingBackground value: String) {
+        if value == ViewSettings.systemBackgroundColor {
+            self.init(uiColor: .systemGroupedBackground)
+        } else {
+            self.init(hex: value)
+        }
+    }
     
     // Initializes a Color instance from a hexadecimal string (e.g., "#FF0000" or "FF0000")
     init(hex: String) {

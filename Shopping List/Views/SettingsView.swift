@@ -26,8 +26,7 @@ struct SettingsView: View {
         
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text("Theme Mode")
-                    .font(.headline)
+                sectionTitle("Theme Mode")
 
                 Picker("Select Theme", selection: $settings.themeMode) {
                     Text("System").tag(ThemeMode.system.rawValue)
@@ -36,40 +35,51 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.segmented)
                 .onChange(of: settings.themeMode) { _, newValue in
-                    settings.themeMode = ThemeMode(rawValue: newValue)?.rawValue ?? ThemeMode.system.rawValue
+                    settings.applyTheme(ThemeMode(rawValue: newValue) ?? .system)
+                    selectedPhoto = nil
                     try? modelContext.save()
                 }
 
-                Text("Background Color")
-                    .font(.headline)
+                sectionTitle("Background Color")
 
                 ColorPicker("Select Background Color", selection: Binding(
-                    get: { Color(hex: settings.backgroundColor) },
+                    get: { Color(shoppingBackground: settings.backgroundColor) },
                     set: { newColor in
+                        selectedPhoto = nil
                         settings.backgroundImageData = nil
                         settings.backgroundColor = newColor.toHex()
                         try? modelContext.save()
                     }
                 ))
+                .shoppingImageLabelStyle(
+                    settings.backgroundImageData != nil,
+                    fallbackColor: .primary
+                )
 
-                Text("Background Image")
-                    .font(.headline)
+                sectionTitle("Background Image")
 
                 PhotosPicker(selection: $selectedPhoto, matching: .images) {
                     Label("Select Background Image", systemImage: "photo")
+                        .shoppingImageLabelStyle(
+                            settings.backgroundImageData != nil,
+                            fallbackColor: .blue
+                        )
                 }
 
-                Text("Opacity")
-                    .font(.headline)
+                sectionTitle("Opacity")
 
                 Slider(value: $settings.elementOpacity, in: 0...1, step: 0.02)
                     .onChange(of: settings.elementOpacity) { _, _ in
                         try? modelContext.save()
                     }
                 Text("Opacity: \(Int(settings.elementOpacity * 100))%")
+                    .shoppingImageLabelStyle(
+                        settings.backgroundImageData != nil,
+                        fallbackColor: .primary
+                    )
+
             }
             .padding()
-            .foregroundColor(settings.themeMode == ThemeMode.dark.rawValue ? .white : .primary)
         }
         .scrollIndicators(.hidden)
         .background {
@@ -79,16 +89,43 @@ struct SettingsView: View {
                     .scaledToFill()
                     .ignoresSafeArea()
             } else {
-                Color(hex: settings.backgroundColor).ignoresSafeArea()
+                Color(shoppingBackground: settings.backgroundColor).ignoresSafeArea()
             }
         }
-        .task(id: selectedPhoto) {
-            guard let data = try? await selectedPhoto?.loadTransferable(type: Data.self) else {
-                return
+        .onChange(of: selectedPhoto) { _, photo in
+            guard let photo else { return }
+            Task {
+                guard
+                    let data = try? await photo.loadTransferable(type: Data.self),
+                    selectedPhoto == photo
+                else { return }
+                settings.backgroundImageData = data
+                selectedPhoto = nil
+                try? modelContext.save()
             }
-            settings.backgroundImageData = data
-            try? modelContext.save()
         }
-        .navigationTitle("Settings")
+        .navigationTitle(settings.backgroundImageData == nil ? Text("Settings") : Text(""))
+        .navigationBarTitleDisplayMode(settings.backgroundImageData == nil ? .large : .inline)
+        .toolbar(settings.backgroundImageData == nil ? .visible : .hidden, for: .navigationBar)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if settings.backgroundImageData != nil {
+                Text("Settings")
+                    .font(.title2.bold())
+                    .shoppingImageLabelStyle(true, fallbackColor: .blue)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+                    .accessibilityAddTraits(.isHeader)
+            }
+        }
+    }
+
+    private func sectionTitle(_ title: LocalizedStringKey) -> some View {
+        Text(title)
+            .font(.headline)
+            .shoppingImageLabelStyle(
+                settings.backgroundImageData != nil,
+                fallbackColor: .primary
+            )
     }
 }

@@ -20,6 +20,121 @@
         }
       }
     },
+    "Access" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugriff"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access"
+          }
+        }
+      }
+    },
+    "Action could not be completed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktion konnte nicht abgeschlossen werden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Action could not be completed"
+          }
+        }
+      }
+    },
+    "Add" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
+          }
+        }
+      }
+    },
+    "Add List" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add List"
+          }
+        }
+      }
+    },
+    "All invitations and participant access will be revoked. Your shopping list stays on this device." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Einladungen und Zugriffe werden widerrufen. Deine Einkaufsliste bleibt auf diesem Gerät erhalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All invitations and participant access will be revoked. Your shopping list stays on this device."
+          }
+        }
+      }
+    },
+    "All Lists" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Listen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Lists"
+          }
+        }
+      }
+    },
+    "Available" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Available"
+          }
+        }
+      }
+    },
     "Background Color" : {
       "localizations" : {
         "de" : {
@@ -52,6 +167,105 @@
         }
       }
     },
+    "Can edit" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darf bearbeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Can edit"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbrechen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "Check your internet connection and try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe deine Internetverbindung und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check your internet connection and try again."
+          }
+        }
+      }
+    },
+    "Checking…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird geprüft …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking…"
+          }
+        }
+      }
+    },
+    "Could not determine" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht ermittelbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not determine"
+          }
+        }
+      }
+    },
+    "Current List" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelle Liste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current List"
+          }
+        }
+      }
+    },
     "Dark" : {
       "localizations" : {
         "de" : {
@@ -64,6 +278,122 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dark"
+          }
+        }
+      }
+    },
+    "Delete Access" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigaben löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Access"
+          }
+        }
+      }
+    },
+    "Delete Access?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigaben löschen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Access?"
+          }
+        }
+      }
+    },
+    "Delete List" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete List"
+          }
+        }
+      }
+    },
+    "Delete List?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste löschen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete List?"
+          }
+        }
+      }
+    },
+    "Delete Sharing" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabe löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Sharing"
+          }
+        }
+      }
+    },
+    "Delete Sharing?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabe löschen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Sharing?"
+          }
+        }
+      }
+    },
+    "Grant Access" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabe erteilen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grant Access"
           }
         }
       }
@@ -84,6 +414,72 @@
         }
       }
     },
+    "iCloud Account" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-Account"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Account"
+          }
+        }
+      }
+    },
+    "iCloud is temporarily unavailable. Please try again later." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud ist vorübergehend nicht verfügbar. Versuche es später erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud is temporarily unavailable. Please try again later."
+          }
+        }
+      }
+    },
+    "iCloud sharing could not be completed. Please try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die iCloud-Freigabe konnte nicht abgeschlossen werden. Versuche es bitte erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud sharing could not be completed. Please try again."
+          }
+        }
+      }
+    },
+    "iCloud sharing is unavailable. Check your iCloud sign-in in Settings." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-Freigaben sind nicht verfügbar. Prüfe deine iCloud-Anmeldung in den Einstellungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud sharing is unavailable. Check your iCloud sign-in in Settings."
+          }
+        }
+      }
+    },
     "Item name" : {
       "localizations" : {
         "de" : {
@@ -96,6 +492,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Item name"
+          }
+        }
+      }
+    },
+    "Leave Shared List" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geteilte Liste verlassen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leave Shared List"
+          }
+        }
+      }
+    },
+    "Leave Shared List?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geteilte Liste verlassen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leave Shared List?"
           }
         }
       }
@@ -116,6 +544,38 @@
         }
       }
     },
+    "List name" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name der Liste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "List name"
+          }
+        }
+      }
+    },
+    "Lists" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lists"
+          }
+        }
+      }
+    },
     "Loading settings ..." : {
       "localizations" : {
         "de" : {
@@ -128,6 +588,128 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Loading settings …"
+          }
+        }
+      }
+    },
+    "Manage Sharing" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabe verwalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage Sharing"
+          }
+        }
+      }
+    },
+    "No access" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Zugriff"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No access"
+          }
+        }
+      }
+    },
+    "No iCloud Account" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein iCloud-Account"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No iCloud Account"
+          }
+        }
+      }
+    },
+    "No one gets access until you invite them using the button below." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erst wenn du unten eine Person einlädst, erhält sie Zugriff auf deine Einkaufsliste."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No one gets access until you invite them using the button below."
+          }
+        }
+      }
+    },
+    "No other lists" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine weiteren Listen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No other lists"
+          }
+        }
+      }
+    },
+    "Not shared" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht geteilt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not shared"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "comment" : "The label of a button that dismisses an alert.",
+      "isCommentAutoGenerated" : true
+    },
+    "Only you" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur du"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only you"
           }
         }
       }
@@ -164,6 +746,140 @@
         }
       }
     },
+    "Other Lists" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weitere Listen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other Lists"
+          }
+        }
+      }
+    },
+    "Other participants will lose access. The list and its items remain available to you." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Andere Teilnehmer verlieren den Zugriff. Die Liste und ihre Einträge bleiben für dich erhalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other participants will lose access. The list and its items remain available to you."
+          }
+        }
+      }
+    },
+    "Other people with access" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weitere Personen mit Zugriff"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other people with access"
+          }
+        }
+      }
+    },
+    "Owner" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigentümer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Owner"
+          }
+        }
+      }
+    },
+    "Participant" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teilnehmer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Participant"
+          }
+        }
+      }
+    },
+    "Participants" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teilnehmer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Participants"
+          }
+        }
+      }
+    },
+    "Pending invitations" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausstehende Einladungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pending invitations"
+          }
+        }
+      }
+    },
+    "Read only" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur lesen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read only"
+          }
+        }
+      }
+    },
     "Recently bought" : {
       "localizations" : {
         "de" : {
@@ -176,6 +892,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recently bought"
+          }
+        }
+      }
+    },
+    "Remove Sharing" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabe entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Sharing"
+          }
+        }
+      }
+    },
+    "Remove Sharing?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabe entfernen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Sharing?"
+          }
+        }
+      }
+    },
+    "Restricted" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eingeschränkt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restricted"
+          }
+        }
+      }
+    },
+    "Role" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rolle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Role"
           }
         }
       }
@@ -261,6 +1043,123 @@
         }
       }
     },
+    "Share Shopping List" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einkaufsliste teilen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share Shopping List"
+          }
+        }
+      }
+    },
+    "Shared" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geteilt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared"
+          }
+        }
+      }
+    },
+    "Shared by another person" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von einer anderen Person geteilt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared by another person"
+          }
+        }
+      }
+    },
+    "Shared Shopping List" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geteilte Einkaufsliste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shared Shopping List"
+          }
+        }
+      }
+    },
+    "Sharing is not available for this iCloud account." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigaben sind für diesen iCloud-Account nicht verfügbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sharing is not available for this iCloud account."
+          }
+        }
+      }
+    },
+    "Sharing Status" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabestatus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sharing Status"
+          }
+        }
+      }
+    },
+    "Sharing unavailable" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabe nicht möglich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sharing unavailable"
+          }
+        }
+      }
+    },
     "Shopping List" : {
       "localizations" : {
         "de" : {
@@ -273,6 +1172,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shopping List"
+          }
+        }
+      }
+    },
+    "Sign in to iCloud in Settings and try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich in den Einstellungen bei iCloud an und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to iCloud in Settings and try again."
           }
         }
       }
@@ -293,6 +1208,55 @@
         }
       }
     },
+    "Temporarily unavailable" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorübergehend nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temporarily unavailable"
+          }
+        }
+      }
+    },
+    "The list and all its items will be permanently deleted for you and all participants." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Liste und alle ihre Einträge werden für dich und alle Teilnehmer dauerhaft gelöscht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The list and all its items will be permanently deleted for you and all participants."
+          }
+        }
+      }
+    },
+    "The list and all its items will be permanently deleted." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Liste und alle ihre Einträge werden dauerhaft gelöscht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The list and all its items will be permanently deleted."
+          }
+        }
+      }
+    },
     "Theme Mode" : {
       "localizations" : {
         "de" : {
@@ -305,6 +1269,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Theme Mode"
+          }
+        }
+      }
+    },
+    "There is not enough iCloud storage for sharing." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für die Freigabe ist nicht genügend iCloud-Speicher verfügbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is not enough iCloud storage for sharing."
           }
         }
       }
@@ -324,7 +1304,74 @@
           }
         }
       }
+    },
+    "Who has access" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wer hat Zugriff?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Who has access"
+          }
+        }
+      }
+    },
+    "You will lose access to this list. The owner and other participants keep it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du verlierst den Zugriff auf diese Liste. Der Eigentümer und andere Teilnehmer behalten sie."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You will lose access to this list. The owner and other participants keep it."
+          }
+        }
+      }
+    },
+    "You will lose access to this shared list. Your own saved list stays on this device." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du verlierst den Zugriff auf diese geteilte Liste. Deine eigene gespeicherte Liste bleibt auf diesem Gerät erhalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You will lose access to this shared list. Your own saved list stays on this device."
+          }
+        }
+      }
+    },
+    "Your access" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Zugriff"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your access"
+          }
+        }
+      }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }

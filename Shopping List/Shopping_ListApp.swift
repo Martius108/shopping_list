@@ -10,11 +10,14 @@ import SwiftData
 
 @main
 struct Shopping_ListApp: App {
+    @UIApplicationDelegateAdaptor(ShoppingListAppDelegate.self) private var appDelegate
+    @StateObject private var shareManager = ShoppingListShareManager()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(shareManager)
         }
-        .modelContainer(for: [ShopItem.self, ViewSettings.self])
+        .modelContainer(for: [ShopItem.self, ShoppingListEntry.self, ViewSettings.self])
     }
 }

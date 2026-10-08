@@ -14,12 +14,14 @@ struct BoughtItemsView: View {
 
     // Access the model context from the environment
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var shareManager: ShoppingListShareManager
     // Access the color scheme (light/dark mode) from the environment
     @Environment(\.colorScheme) var colorScheme
     // List of shopping items passed from the parent view
     var items: [ShopItem]
     // Settings passed from the parent view
     var settings: ViewSettings
+    var list: ShoppingListEntry
     var contentWidth: CGFloat
 
     var body: some View {
@@ -34,10 +36,10 @@ struct BoughtItemsView: View {
     // Header for the "Recently bought" section
     private var boughtItemsHeader: some View {
         Text("Recently bought")
-            .font(.system(size: 17, weight: .bold))
+            .font(.subheadline.weight(.semibold))
             .shoppingImageLabelStyle(
                 settings.backgroundImageData != nil,
-                fallbackColor: themedColor(darkModeColor: .white, lightModeColor: .black)
+                fallbackColor: sectionHeaderColor
             )
             .frame(maxWidth: contentWidth, alignment: .leading)
             .padding(.bottom, 8)
@@ -56,8 +58,12 @@ struct BoughtItemsView: View {
             Button {
                 withAnimation {
                     item.isBought = false
+                    item.updatedAt = Date()
                     do {
                         try modelContext.save()
+                        Task {
+                            await shareManager.sync(list: list, modelContext: modelContext)
+                        }
                     } catch {
                         print("Error while saving: \(error.localizedDescription)")
                     }
@@ -77,7 +83,7 @@ struct BoughtItemsView: View {
         .padding(.trailing, 8)
         .frame(maxWidth: contentWidth)
         .background(
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: 12)
                 .fill(elementColor(darkModeColor: .black, lightModeColor: .white))
                 .padding(.top, 3)
         )
@@ -104,5 +110,11 @@ struct BoughtItemsView: View {
     private func elementColor(darkModeColor: Color, lightModeColor: Color) -> Color {
         themedColor(darkModeColor: darkModeColor, lightModeColor: lightModeColor)
             .opacity(settings.elementOpacity)
+    }
+
+    private var sectionHeaderColor: Color {
+        settings.backgroundColor == ViewSettings.systemBackgroundColor
+            ? .secondary
+            : themedColor(darkModeColor: .white, lightModeColor: .black)
     }
 }
