@@ -10,6 +10,12 @@ final class ShoppingListEntry: Identifiable {
     var sharedZoneOwnerName: String?
     var isShared: Bool = false
     var replacedByListID: UUID?
+    var firebaseSourceListID: UUID?
+    var firebaseListID: String?
+    var firebaseOwnerID: String?
+    var firebaseAccountID: String?
+    var firebaseAccessRevoked: Bool = false
+    var firebaseSharingReady: Bool = false
 
     init(
         name: String,

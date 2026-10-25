@@ -17,6 +17,7 @@ struct Shopping_ListApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(shareManager)
+                .environmentObject(shareManager.firebase)
         }
         .modelContainer(for: [ShopItem.self, ShoppingListEntry.self, ViewSettings.self])
     }

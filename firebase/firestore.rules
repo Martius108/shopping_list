@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function verified() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email is string;
+    }
+    function email() { return request.auth.token.email.lower(); }
+    function member(data) {
+      return verified() && email() in data.memberEmails;
+    }
+    function validList(data) {
+      return data.keys().hasAll(['name', 'ownerID', 'ownerEmail', 'memberEmails', 'deleted'])
+        && data.keys().hasOnly(['name', 'ownerID', 'ownerEmail', 'memberEmails', 'deleted', 'sharingReady'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 1000
+        && data.ownerID is string && data.ownerEmail is string
+        && data.memberEmails is list && data.memberEmails.size() <= 100
+        && data.ownerEmail in data.memberEmails
+        && data.deleted is bool
+        && data.get('sharingReady', false) is bool;
+    }
+    match /shoppingLists/{listID} {
+      allow read: if member(resource.data);
+      allow create: if verified() && validList(request.resource.data)
+        && request.resource.data.ownerID == request.auth.uid
+        && request.resource.data.ownerEmail == email()
+        && request.resource.data.memberEmails == [email()]
+        && request.resource.data.deleted == false
+        && request.resource.data.get('sharingReady', false) == false;
+      allow update: if member(resource.data) && validList(request.resource.data)
+        && request.resource.data.ownerID == resource.data.ownerID
+        && request.resource.data.ownerEmail == resource.data.ownerEmail
+        && (resource.data.ownerID == request.auth.uid
+          || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberEmails'])
+            && request.resource.data.memberEmails.toSet()
+              == resource.data.memberEmails.toSet().difference([email()].toSet())));
+      allow delete: if member(resource.data) && resource.data.ownerID == request.auth.uid
+        && resource.data.deleted == true;
+
+      match /items/{itemID} {
+        function parent() {
+          return get(/databases/$(database)/documents/shoppingLists/$(listID)).data;
+        }
+        function validItem(data) {
+          return data.keys().hasAll(['name', 'amount', 'isBought', 'createdAt', 'updatedAt', 'deletedAt'])
+            && data.keys().hasOnly(['name', 'amount', 'isBought', 'createdAt', 'updatedAt', 'deletedAt'])
+            && data.name is string && data.name.size() > 0 && data.name.size() <= 1000
+            && data.amount is int && data.amount > 0
+            && data.isBought is bool
+            && data.createdAt is timestamp && data.updatedAt is timestamp
+            && (data.deletedAt == null || data.deletedAt is timestamp);
+        }
+        allow read: if member(parent())
+          && (parent().deleted == false || parent().ownerID == request.auth.uid);
+        allow create, update: if member(parent()) && parent().deleted == false
+          && itemID.size() == 36 && validItem(request.resource.data);
+        allow delete: if member(parent()) && parent().ownerID == request.auth.uid
+          && parent().deleted == true;
+      }
+    }
+  }
+}

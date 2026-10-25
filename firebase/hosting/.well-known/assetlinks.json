@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.martinlanius.shoppinglist",
+      "sha256_cert_fingerprints": [
+        "4D:10:65:7D:AD:69:82:25:A6:F2:6B:5C:73:3B:AA:EC:A2:B5:C9:23:66:18:8D:59:A9:9C:3C:77:E4:5C:93:39"
+      ]
+    }
+  }
+]

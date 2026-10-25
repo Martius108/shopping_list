@@ -1,6 +1,6 @@
 # Datenschutzerklärung für Shopping List
 
-Stand: 22. Juni 2026
+Stand: 23. Oktober 2026
 
 Shopping List ist eine iOS-App von Martin Lanius. Diese Datenschutzerklärung erklärt, welche Informationen die App verwendet und warum.
 
@@ -21,6 +21,18 @@ Shopping List greift nicht ohne Ihre Auswahl auf Fotos zu.
 Shopping List verwendet SwiftData und kann CloudKit zur iCloud-Synchronisierung verwenden. Wenn iCloud verfügbar und für die App aktiviert ist, können Einkaufsartikel und App-Einstellungen über Ihren privaten iCloud-Account synchronisiert werden.
 
 Martin Lanius betreibt keinen eigenen Server für diese Daten.
+
+## Optionales Teilen über Firebase
+
+Wenn Sie „Android & iPhone“ verwenden, verarbeitet Google Firebase Authentication Ihre E-Mail-Adresse, Ihr Passwort und technische Verbindungsdaten zur Anmeldung und zum Schutz vor Missbrauch. Die E-Mail-Adresse muss bestätigt werden.
+
+Cloud Firestore speichert für diese Funktion den Listennamen, Artikel, Mengen, Kaufstatus, Zeitpunkte, eine Benutzerkennung und die E-Mail-Adressen der freigegebenen Teilnehmer. Die Datenbank befindet sich in Frankfurt (europe-west3). Bestätigte Konten mit Freigabe können die betreffende Liste lesen und bearbeiten; der Eigentümer verwaltet den Zugriff. Die E-Mail-Adressen der Teilnehmer sind innerhalb der freigegebenen Liste sichtbar.
+
+Hintergrundbilder und Darstellungseinstellungen werden nicht an Firebase übertragen. Google Analytics ist nicht eingebunden. Die bestehende iCloud-Synchronisierung kann weiterhin lokale Listen und Einstellungen über Ihren privaten Apple-Account synchronisieren.
+
+Der Eigentümer kann einzelne Freigaben entfernen oder die gemeinsame Liste löschen. Im Freigabeablauf können Sie Ihr ShoppingList-Konto nach erneuter Passwortbestätigung löschen. Dabei werden Ihre eigenen Firebase-Listen einschließlich Artikeln gelöscht, Ihre Teilnahme an anderen Firebase-Listen entfernt und die zugehörigen lokalen Listenkopien aus der App entfernt. Andere lokale und iCloud-Listen bleiben erhalten.
+
+Weitere Informationen zu Verarbeitung und Aufbewahrung durch Google: https://firebase.google.com/support/privacy. Die dort beschriebenen Aufbewahrungsfristen können auch Sicherungssysteme betreffen.
 
 ## Datenspeicherung
 

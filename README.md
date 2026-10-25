@@ -12,6 +12,7 @@ Shopping List is a simple, customizable shopping list for iPhone and iPad. The a
 - Custom background color, element opacity, and optional photo background
 - Local storage with SwiftData
 - Automatic synchronization through the user's private iCloud account when iCloud is available and enabled
+- Optional Firebase sharing with confirmed ShoppingList accounts, prepared for Android and iPhone
 - iPhone and iPad support in portrait and landscape orientation
 
 ## Privacy and Support
@@ -20,7 +21,9 @@ Shopping List is a simple, customizable shopping list for iPhone and iPad. The a
 - [Datenschutzerklärung Deutsch](docs/privacy-de.md)
 - [Support](docs/support.html)
 
-Shopping items and settings are stored with SwiftData. When iCloud is enabled for the app, they may synchronize through the user's private CloudKit database. Photo library access is requested only when the user selects a custom background image.
+Shopping items and settings are stored with SwiftData. When iCloud is enabled for the app, they may synchronize through the user's private CloudKit database. Optional Firebase sharing also stores the shared lists, items, and participant email addresses in Firestore and uses Firebase Authentication. Photo library access is requested only when the user selects a custom background image.
+
+Implementation status, the shared Firebase data format, completed checks, and the next Android steps are documented in [firebase/README.md](firebase/README.md).
 
 ## App Store Texts
 

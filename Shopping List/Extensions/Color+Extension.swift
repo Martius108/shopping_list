@@ -9,16 +9,27 @@ import SwiftUI
 
 extension View {
     @ViewBuilder
-    func shoppingImageLabelStyle(_ imageBackground: Bool, fallbackColor: Color) -> some View {
-        if imageBackground {
+    func shoppingImageLabelStyle(_ settings: ViewSettings, fallbackColor: Color) -> some View {
+        if settings.backgroundImageData != nil {
             self
                 .foregroundStyle(.tint)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                .background(.bar, in: Capsule())
+                .background(ShoppingImageLabelBackground(opacity: settings.elementOpacity))
         } else {
             self.foregroundStyle(fallbackColor)
         }
+    }
+}
+
+private struct ShoppingImageLabelBackground: View {
+    @Environment(\.colorScheme) private var colorScheme
+    let opacity: Double
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: 12)
+            .fill((colorScheme == .dark ? Color.black : Color.white).opacity(opacity))
+            .padding(.top, 3)
     }
 }
 

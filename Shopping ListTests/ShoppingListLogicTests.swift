@@ -4,6 +4,269 @@ import SwiftData
 @testable import Shopping_List
 
 final class ShoppingListLogicTests: XCTestCase {
+    func testFirebaseListsAreVisibleOnlyForTheirSignedInAccount() {
+        let local = ShoppingListEntry(name: "Local")
+        let shared = ShoppingListEntry(name: "Shared")
+        shared.firebaseListID = "remote-list"
+        shared.firebaseAccountID = "alice"
+
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [local, shared]).map(\.id), [local.id])
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [local, shared], firebaseUserID: "bob").map(\.id), [local.id])
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [local, shared], firebaseUserID: "alice").map(\.id), [local.id, shared.id])
+    }
+
+    func testOwnedAndReceivedListsKeepTheirRoleWhenTheSelectionChanges() {
+        let own = ShoppingListEntry(name: "Private")
+        let received = ShoppingListEntry(name: "Received")
+        received.firebaseListID = "received"
+        received.firebaseAccountID = "alice"
+        received.firebaseOwnerID = "bob"
+        received.firebaseSharingReady = true
+        XCTAssertFalse(ShoppingListLogic.isReceivedList(own, firebaseUserID: "alice"))
+        XCTAssertTrue(ShoppingListLogic.isReceivedList(received, firebaseUserID: "alice"))
+        XCTAssertEqual(ShoppingListLogic.otherLists(from: [own, received], currentID: own.id,
+            firebaseUserID: "alice").map(\.id), [received.id])
+        XCTAssertEqual(ShoppingListLogic.otherLists(from: [own, received], currentID: received.id,
+            firebaseUserID: "alice").map(\.id), [own.id])
+    }
+
+    func testOnlyTheOwnersSharedCurrentListAlsoAppearsUnderOtherLists() {
+        let own = ShoppingListEntry(name: "Own")
+        own.firebaseListID = "own"
+        own.firebaseAccountID = "alice"
+        own.firebaseOwnerID = "alice"
+        let received = ShoppingListEntry(name: "Received")
+        received.firebaseListID = "received"
+        received.firebaseAccountID = "alice"
+        received.firebaseOwnerID = "bob"
+        received.firebaseSharingReady = true
+        XCTAssertEqual(ShoppingListLogic.otherLists(from: [own, received], currentID: own.id,
+            firebaseUserID: "alice").map(\.id), [received.id])
+        own.firebaseSharingReady = true
+        XCTAssertFalse(ShoppingListLogic.isReceivedList(own, firebaseUserID: "alice"))
+        XCTAssertEqual(ShoppingListLogic.otherLists(from: [own, received], currentID: own.id,
+            firebaseUserID: "alice").map(\.id), [own.id, received.id])
+        XCTAssertEqual(ShoppingListLogic.otherLists(from: [own, received], currentID: received.id,
+            firebaseUserID: "alice").map(\.id), [own.id])
+        XCTAssertTrue(ShoppingListLogic.otherLists(from: [own, received], currentID: own.id,
+            firebaseUserID: "other-account").isEmpty)
+    }
+
+    func testICloudOwnershipUsesTheSameSelectedListRules() {
+        let own = ShoppingListEntry(name: "Own iCloud", sharedZoneName: "own-zone",
+            sharedZoneOwnerName: CKCurrentUserDefaultName, isShared: true)
+        let received = ShoppingListEntry(name: "Received iCloud", sharedZoneName: "received-zone",
+            sharedZoneOwnerName: "other-owner", isShared: true)
+        XCTAssertFalse(ShoppingListLogic.isReceivedList(own, firebaseUserID: nil))
+        XCTAssertTrue(ShoppingListLogic.isReceivedList(received, firebaseUserID: nil))
+        XCTAssertEqual(ShoppingListLogic.otherLists(from: [own, received], currentID: own.id,
+            firebaseUserID: nil).map(\.id), [own.id, received.id])
+        XCTAssertEqual(ShoppingListLogic.otherLists(from: [own, received], currentID: received.id,
+            firebaseUserID: nil).map(\.id), [own.id])
+    }
+
+    func testFirebaseCopyReplacesOnlyItsPrivateSourceForTheSignedInAccount() {
+        let source = ShoppingListEntry(name: "Private", sharedZoneName: "zone")
+        let copy = ShoppingListEntry(name: "Shared")
+        copy.firebaseAccountID = "alice"
+        copy.firebaseSourceListID = source.id
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [source, copy], firebaseUserID: "alice").map(\.id), [source.id, copy.id])
+        copy.firebaseListID = "remote"
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [source, copy], firebaseUserID: "alice").map(\.id), [copy.id])
+        copy.firebaseSharingReady = true
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [source, copy], firebaseUserID: "alice").map(\.id), [copy.id])
+        copy.firebaseSharingReady = false
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [source, copy], firebaseUserID: "alice").map(\.id), [copy.id])
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [source, copy]).map(\.id), [source.id])
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [source, copy], firebaseUserID: "bob").map(\.id), [source.id])
+        source.isShared = true
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [source, copy], firebaseUserID: "alice").map(\.id), [source.id, copy.id])
+        source.isShared = false
+        copy.firebaseAccessRevoked = true
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [source, copy], firebaseUserID: "alice").map(\.id), [source.id])
+    }
+
+    func testSharedListsIncludeTheSameAccountOnBothPlatforms() {
+        let local = ShoppingListEntry(name: "Local")
+        let cloud = ShoppingListEntry(name: "iCloud", isShared: true)
+        let selfOnly = ShoppingListEntry(name: "Self only")
+        selfOnly.firebaseListID = "self"
+        selfOnly.firebaseAccountID = "alice"
+        let outgoing = ShoppingListEntry(name: "Outgoing")
+        outgoing.firebaseListID = "outgoing"
+        outgoing.firebaseAccountID = "alice"
+        let incoming = ShoppingListEntry(name: "Incoming")
+        incoming.firebaseListID = "incoming"
+        incoming.firebaseAccountID = "alice"
+        selfOnly.firebaseSharingReady = true
+        outgoing.firebaseSharingReady = true
+        incoming.firebaseSharingReady = true
+        let foreign = ShoppingListEntry(name: "Other account")
+        foreign.firebaseListID = "foreign"
+        foreign.firebaseAccountID = "bob"
+        let revoked = ShoppingListEntry(name: "Revoked")
+        revoked.firebaseListID = "revoked"
+        revoked.firebaseAccountID = "alice"
+        revoked.firebaseAccessRevoked = true
+        let replaced = ShoppingListEntry(name: "Replaced", isShared: true, replacedByListID: cloud.id)
+        let all = [local, cloud, selfOnly, outgoing, incoming, foreign, revoked, replaced]
+        let members = ["self": ["alice@example.test"],
+                       "outgoing": ["alice@example.test", "bob@example.test"],
+                       "incoming": ["carol@example.test", "alice@example.test"],
+                       "foreign": ["bob@example.test", "carol@example.test"],
+                       "revoked": ["alice@example.test", "bob@example.test"]]
+        XCTAssertEqual(ShoppingListLogic.sharedLists(from: all, firebaseUserID: "alice", firebaseMembers: members).map(\.id),
+                       [cloud.id, selfOnly.id, outgoing.id, incoming.id])
+        XCTAssertEqual(ShoppingListLogic.sharedLists(from: all, firebaseUserID: nil, firebaseMembers: members).map(\.id), [cloud.id])
+        XCTAssertEqual(ShoppingListLogic.sharedLists(from: all, firebaseUserID: "alice", firebaseMembers: [:]).map(\.id), [cloud.id])
+        XCTAssertTrue(ShoppingListLogic.sharedLists(from: [local], firebaseUserID: "alice", firebaseMembers: members).isEmpty)
+        selfOnly.firebaseSharingReady = false
+        XCTAssertTrue(ShoppingListLogic.sharedLists(from: [selfOnly], firebaseUserID: "alice", firebaseMembers: members).isEmpty)
+    }
+
+    func testResumeRequiresAnExplicitOwnedUnfinishedShare() {
+        let started = ShoppingListEntry(name: "Started")
+        let current = ShoppingListEntry(name: "Current")
+        XCTAssertEqual(ShoppingListLogic.sharingToResume(from: [started, current], pendingID: started.id.uuidString,
+            firebaseUserID: "alice")?.id, started.id)
+        XCTAssertEqual(ShoppingListLogic.sharingToResume(from: [started], pendingID: started.id.uuidString,
+            firebaseUserID: nil)?.id, started.id)
+        XCTAssertNil(ShoppingListLogic.sharingToResume(from: [current], pendingID: "", firebaseUserID: "alice"))
+        started.firebaseListID = "cloud"
+        started.firebaseAccountID = "alice"
+        started.firebaseOwnerID = "alice"
+        XCTAssertEqual(ShoppingListLogic.sharingToResume(from: [started, current], pendingID: started.id.uuidString,
+            firebaseUserID: "alice")?.id, started.id)
+        XCTAssertNil(ShoppingListLogic.sharingToResume(from: [started], pendingID: started.id.uuidString, firebaseUserID: "bob"))
+        started.firebaseSharingReady = true
+        XCTAssertNil(ShoppingListLogic.sharingToResume(from: [started], pendingID: started.id.uuidString, firebaseUserID: "alice"))
+        started.firebaseSharingReady = false
+        started.firebaseOwnerID = "bob"
+        XCTAssertNil(ShoppingListLogic.sharingToResume(from: [started], pendingID: started.id.uuidString, firebaseUserID: "alice"))
+    }
+
+    func testLeavingTheLastReceivedListDoesNotSuggestSharingThePrivateList() {
+        let own = ShoppingListEntry(name: "Own")
+        XCTAssertNil(ShoppingListLogic.sharingToResume(from: [own], pendingID: "", firebaseUserID: "alice"))
+        XCTAssertEqual(ShoppingListLogic.sharingToResume(from: [own], pendingID: own.id.uuidString,
+            firebaseUserID: "alice")?.id, own.id)
+    }
+
+    func testListNamesAreNormalizedAndMatchTheAndroidLengthLimit() {
+        XCTAssertEqual(ShoppingListLogic.listName("  Weekend   groceries "), "Weekend groceries")
+        XCTAssertNil(ShoppingListLogic.listName(" \n\t "))
+        XCTAssertEqual(ShoppingListLogic.listName(String(repeating: "x", count: 1000))?.count, 1000)
+        XCTAssertNil(ShoppingListLogic.listName(String(repeating: "x", count: 1001)))
+        XCTAssertNotNil(ShoppingListLogic.listName(String(repeating: "🍎", count: 500)))
+        XCTAssertNil(ShoppingListLogic.listName(String(repeating: "🍎", count: 501)))
+    }
+
+    func testFailedUploadReusesOnlyTheUnambiguousOwnedCopy() {
+        let source = ShoppingListEntry(name: "List", sharedZoneName: "zone")
+        let copy = ShoppingListEntry(name: "List")
+        copy.firebaseListID = "remote"
+        copy.firebaseOwnerID = "alice"
+        copy.firebaseAccountID = "alice"
+        let item = ShopItem(name: "Milk", listID: source.id)
+        let copiedItem = ShopItem(name: "Milk", listID: copy.id)
+        copiedItem.id = item.id
+        let all = [source, copy]
+        let items = [item, copiedItem]
+        XCTAssertEqual(ShoppingListLogic.unfinishedFirebaseCopy(of: source, lists: all, items: items, userID: "alice")?.id, copy.id)
+        XCTAssertNil(ShoppingListLogic.unfinishedFirebaseCopy(of: source, lists: all, items: items, userID: "bob"))
+        XCTAssertNil(ShoppingListLogic.unfinishedFirebaseCopy(of: source, lists: all, items: [], userID: "alice"))
+        copiedItem.id = UUID()
+        XCTAssertNil(ShoppingListLogic.unfinishedFirebaseCopy(of: source, lists: all, items: items, userID: "alice"))
+        copiedItem.id = item.id
+        copy.firebaseSharingReady = true
+        XCTAssertNil(ShoppingListLogic.unfinishedFirebaseCopy(of: source, lists: all, items: items, userID: "alice"))
+    }
+
+    func testRepeatedSharingReusesCompletedCopiesAndKeepsAmbiguityVisible() {
+        let source = ShoppingListEntry(name: "List", sharedZoneName: "zone")
+        let copy = ShoppingListEntry(name: "List")
+        copy.firebaseListID = "remote"
+        copy.firebaseOwnerID = "alice"
+        copy.firebaseAccountID = "alice"
+        copy.firebaseSharingReady = true
+        let original = ShopItem(name: "Milk", listID: source.id)
+        let copied = ShopItem(name: "Milk", listID: copy.id)
+        copied.id = original.id
+        let items = [original, copied]
+        XCTAssertEqual(ShoppingListLogic.firebaseCopies(of: source, lists: [source, copy], items: items, userID: "alice").map(\.id), [copy.id])
+        XCTAssertEqual(ShoppingListLogic.firebaseCopies(of: source, lists: [source, copy], items: items, userID: "alice").map(\.id), [copy.id])
+        XCTAssertTrue(ShoppingListLogic.firebaseCopies(of: source, lists: [source, copy], items: items, userID: "bob").isEmpty)
+        let unrelated = ShoppingListEntry(name: "List", sharedZoneName: "other-zone")
+        XCTAssertTrue(ShoppingListLogic.firebaseCopies(of: unrelated, lists: [unrelated, copy], items: items, userID: "alice").isEmpty)
+        copy.firebaseSourceListID = source.id
+        copy.name = "Renamed"
+        XCTAssertEqual(ShoppingListLogic.firebaseCopies(of: source, lists: [source, copy], items: [], userID: "alice").map(\.id), [copy.id])
+        let second = ShoppingListEntry(name: "Another copy")
+        second.firebaseSourceListID = source.id
+        second.firebaseListID = "second-remote"
+        second.firebaseOwnerID = "alice"
+        second.firebaseAccountID = "alice"
+        XCTAssertEqual(ShoppingListLogic.firebaseCopies(of: source, lists: [source, copy, second], items: [], userID: "alice").count, 2)
+    }
+
+    func testMissingCloudZoneRemovesOnlyEmptyOwnedPrivateEntries() {
+        let obsolete = ShoppingListEntry(name: "Deleted", sharedZoneName: "gone", sharedZoneOwnerName: "owner")
+        let available = ShoppingListEntry(name: "Existing", sharedZoneName: "present", sharedZoneOwnerName: "owner")
+        let dirty = ShoppingListEntry(name: "Offline edits", sharedZoneName: "offline", sharedZoneOwnerName: "owner")
+        let guest = ShoppingListEntry(name: "Received", sharedZoneName: "guest", sharedZoneOwnerName: "other")
+        let shared = ShoppingListEntry(name: "Shared", sharedZoneName: "shared", sharedZoneOwnerName: "owner", isShared: true)
+        let firebase = ShoppingListEntry(name: "Firebase", sharedZoneName: "legacy", sharedZoneOwnerName: "owner")
+        firebase.firebaseListID = "remote"
+        let local = ShoppingListEntry(name: "New private")
+        let item = ShopItem(name: "Unsaved milk", listID: dirty.id)
+        XCTAssertEqual(ShoppingListLogic.emptyCloudListsMissingFromServer(
+            [obsolete, available, dirty, guest, shared, firebase, local], items: [item],
+            availableZones: ["present"], ownerName: "owner").map(\.id), [obsolete.id])
+        XCTAssertEqual(ShoppingListLogic.emptyCloudListsMissingFromServer(
+            [obsolete, available, dirty, guest, shared, firebase, local], items: [item],
+            availableZones: ["gone", "present", "offline"], ownerName: "owner",
+            deletedZones: ["gone", "offline"]).map(\.id), [obsolete.id])
+    }
+
+    func testRevokedFirebaseListIsHiddenUntilAccessIsRestored() {
+        let list = ShoppingListEntry(name: "Shared")
+        list.firebaseListID = "remote-list"
+        list.firebaseAccountID = "alice"
+        list.firebaseAccessRevoked = true
+        XCTAssertTrue(ShoppingListLogic.visibleLists(from: [list], firebaseUserID: "alice").isEmpty)
+        list.firebaseAccessRevoked = false
+        XCTAssertEqual(ShoppingListLogic.visibleLists(from: [list], firebaseUserID: "alice").map(\.id), [list.id])
+    }
+
+    @MainActor
+    func testFirebaseCopyIsNotMergedBackIntoItsICloudSource() throws {
+        let container = try ModelContainer(
+            for: ShopItem.self, ShoppingListEntry.self, ViewSettings.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
+        )
+        let context = container.mainContext
+        let cloud = ShoppingListEntry(name: "Groceries", sharedZoneName: "SharedShoppingList-test",
+                                      sharedZoneOwnerName: CKCurrentUserDefaultName)
+        let firebase = ShoppingListEntry(name: "Groceries")
+        firebase.firebaseListID = "firebase-list"
+        firebase.firebaseAccountID = "alice"
+        let original = ShopItem(name: "Milk", listID: cloud.id)
+        let copy = ShopItem(name: "Milk", listID: firebase.id)
+        copy.id = original.id
+        context.insert(cloud)
+        context.insert(firebase)
+        context.insert(original)
+        context.insert(copy)
+        try context.save()
+        try ShoppingListShareManager().consolidateEquivalentOwnedLists(
+            lists: [cloud, firebase], items: [original, copy], settings: ViewSettings(), modelContext: context
+        )
+        try context.save()
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShoppingListEntry>()), 2)
+        XCTAssertEqual(copy.listID, firebase.id)
+        XCTAssertEqual(firebase.firebaseListID, "firebase-list")
+    }
+
     func testDisplayNameTrimsWhitespaceAndCollapsesSpaces() {
         XCTAssertEqual(
             ShoppingListLogic.displayName(for: "  milk   chocolate  "),

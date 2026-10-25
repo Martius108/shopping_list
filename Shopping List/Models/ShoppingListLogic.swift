@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CloudKit
 import SwiftData
 
 enum ThemeMode: String, CaseIterable {
@@ -20,8 +21,89 @@ enum ShoppingListLogic {
         let itemID: UUID
     }
 
-    static func visibleLists(from lists: [ShoppingListEntry]) -> [ShoppingListEntry] {
-        lists.filter { $0.replacedByListID == nil }
+    static func visibleLists(
+        from lists: [ShoppingListEntry], firebaseUserID: String? = nil
+    ) -> [ShoppingListEntry] {
+        let accessible = lists.filter {
+            $0.replacedByListID == nil && !$0.firebaseAccessRevoked
+                && ($0.firebaseListID == nil
+                    || (firebaseUserID != nil && $0.firebaseAccountID == firebaseUserID))
+        }
+        let copiedSources = Set(accessible.filter { $0.firebaseListID != nil }.compactMap(\.firebaseSourceListID))
+        return accessible.filter { $0.isShared || !copiedSources.contains($0.id) }
+    }
+
+    static func isReceivedList(_ list: ShoppingListEntry, firebaseUserID: String?) -> Bool {
+        if list.firebaseListID != nil { return list.firebaseOwnerID != firebaseUserID }
+        return list.sharedZoneOwnerName != nil && list.sharedZoneOwnerName != CKCurrentUserDefaultName
+    }
+
+    static func otherLists(
+        from lists: [ShoppingListEntry], currentID: UUID?, firebaseUserID: String?
+    ) -> [ShoppingListEntry] {
+        visibleLists(from: lists, firebaseUserID: firebaseUserID).filter { list in
+            let shared = list.firebaseListID != nil ? list.firebaseSharingReady : list.isShared
+            return list.id != currentID || (shared && !isReceivedList(list, firebaseUserID: firebaseUserID))
+        }
+    }
+
+    static func sharedLists(
+        from lists: [ShoppingListEntry], firebaseUserID: String?, firebaseMembers: [String: [String]]
+    ) -> [ShoppingListEntry] {
+        visibleLists(from: lists, firebaseUserID: firebaseUserID).filter { list in
+            if let id = list.firebaseListID {
+                return list.firebaseSharingReady && !(firebaseMembers[id] ?? []).isEmpty
+            }
+            return list.isShared
+        }
+    }
+
+    static func sharingToResume(
+        from lists: [ShoppingListEntry], pendingID: String, firebaseUserID: String?
+    ) -> ShoppingListEntry? {
+        visibleLists(from: lists, firebaseUserID: firebaseUserID).first {
+            $0.id.uuidString == pendingID && !$0.firebaseSharingReady
+                && !isReceivedList($0, firebaseUserID: firebaseUserID)
+        }
+    }
+
+    static func listName(_ value: String) -> String? {
+        let name = normalizedName(value)
+        return (1...1000).contains(name.utf16.count) ? name : nil
+    }
+
+    static func firebaseCopies(
+        of source: ShoppingListEntry, lists: [ShoppingListEntry], items: [ShopItem], userID: String
+    ) -> [ShoppingListEntry] {
+        guard source.firebaseListID == nil else { return [] }
+        let sourceIDs = Set(items.filter { $0.listID == source.id }.map(\.id))
+        return visibleLists(from: lists, firebaseUserID: userID).filter { copy in
+            guard copy.firebaseListID != nil, copy.firebaseOwnerID == userID, !copy.isDeleted else { return false }
+            if let sourceID = copy.firebaseSourceListID { return sourceID == source.id }
+            // Copies made before source IDs were stored kept the original item UUIDs.
+            return source.sharedZoneName != nil && !sourceIDs.isEmpty && copy.name == source.name
+                && Set(items.filter { $0.listID == copy.id }.map(\.id)) == sourceIDs
+        }
+    }
+
+    static func unfinishedFirebaseCopy(
+        of source: ShoppingListEntry, lists: [ShoppingListEntry], items: [ShopItem], userID: String
+    ) -> ShoppingListEntry? {
+        let copies = firebaseCopies(of: source, lists: lists, items: items, userID: userID)
+            .filter { !$0.firebaseSharingReady }
+        return copies.count == 1 ? copies[0] : nil
+    }
+
+    static func emptyCloudListsMissingFromServer(
+        _ lists: [ShoppingListEntry], items: [ShopItem], availableZones: Set<String>, ownerName: String,
+        deletedZones: Set<String> = []
+    ) -> [ShoppingListEntry] {
+        let nonempty = Set(items.compactMap(\.listID))
+        return lists.filter {
+            guard $0.firebaseListID == nil, !$0.isShared, $0.sharedZoneOwnerName == ownerName,
+                  let zone = $0.sharedZoneName else { return false }
+            return (!availableZones.contains(zone) || deletedZones.contains(zone)) && !nonempty.contains($0.id)
+        }
     }
 
     static func visibleItems(from items: [ShopItem], listID: UUID) -> [ShopItem] {

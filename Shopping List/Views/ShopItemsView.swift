@@ -33,7 +33,7 @@ struct ShopItemsView: View {
                     Text("To buy")
             .font(.subheadline.weight(.semibold))
             .shoppingImageLabelStyle(
-                settings.backgroundImageData != nil,
+                settings,
                 fallbackColor: sectionHeaderColor
             )
             .frame(maxWidth: contentWidth, alignment: .leading)

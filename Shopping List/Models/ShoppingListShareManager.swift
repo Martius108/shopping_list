@@ -29,8 +29,33 @@ final class ShoppingListShareManager: ObservableObject {
     private static let pendingZoneNameKey = "pendingSharedShoppingListZoneName"
     private static let pendingOwnerNameKey = "pendingSharedShoppingListOwnerName"
     private static let pendingTitleKey = "pendingSharedShoppingListTitle"
+    private static var deletedZoneNames: Set<String> {
+        get { Set(UserDefaults.standard.stringArray(forKey: "deletedShoppingListCloudZones") ?? []) }
+        set { UserDefaults.standard.set(Array(newValue), forKey: "deletedShoppingListCloudZones") }
+    }
+
+    private static func importCompletedCleanupReceipt() {
+        let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let receipt = directory.appendingPathComponent("ApprovedCopyCleanupReport.json")
+        // Preserve the deletion history of the completed repair performed before zone tombstones existed.
+        guard let reportData = try? Data(contentsOf: receipt),
+              let report = try? JSONSerialization.jsonObject(with: reportData) as? [String: Any],
+              report["status"] as? String == "success", report["remainingLists"] as? Int == 1,
+              let currentID = report["currentRemoteID"] as? String,
+              let backupData = try? Data(contentsOf: directory.appendingPathComponent("ApprovedCopyCleanupBackup.json")),
+              let backup = try? JSONSerialization.jsonObject(with: backupData) as? [String: Any],
+              let lists = backup["lists"] as? [[String: String]],
+              lists.contains(where: { $0["remoteID"] == currentID && $0["zone"] == "" }) else { return }
+        deletedZoneNames.formUnion(lists.compactMap { list in
+            guard let zone = list["zone"], zone.hasPrefix(zoneNamePrefix) else { return nil }
+            return zone
+        })
+        try? FileManager.default.removeItem(at: receipt)
+    }
+
 
     let container = CKContainer(identifier: containerIdentifier)
+    let firebase = FirebaseShoppingListManager()
 
     @Published private(set) var accountStatus: CKAccountStatus = .couldNotDetermine
     @Published private(set) var share: CKShare?
@@ -65,6 +90,7 @@ final class ShoppingListShareManager: ObservableObject {
 
     static func storeAcceptedShare(_ share: CKShare) {
         let defaults = UserDefaults.standard
+        deletedZoneNames.remove(share.recordID.zoneID.zoneName)
         defaults.set(share.recordID.zoneID.zoneName, forKey: pendingZoneNameKey)
         defaults.set(share.recordID.zoneID.ownerName, forKey: pendingOwnerNameKey)
         defaults.set(share[CKShare.SystemFieldKey.title] as? String, forKey: pendingTitleKey)
@@ -72,6 +98,7 @@ final class ShoppingListShareManager: ObservableObject {
     }
 
     func refresh(list: ShoppingListEntry) async {
+        guard list.firebaseListID == nil else { return }
         let listID = list.id
         if activeListID != listID {
             activeListID = listID
@@ -87,6 +114,8 @@ final class ShoppingListShareManager: ObservableObject {
             guard activeListID == listID else { return }
             share = fetchedShare
             list.isShared = sharingIsActive(fetchedShare, zoneID: zoneID(for: list))
+            if let title = fetchedShare?[CKShare.SystemFieldKey.title] as? String,
+               let name = ShoppingListLogic.listName(title) { list.name = name }
         } catch let error as CKError where error.code == .unknownItem || error.code == .zoneNotFound {
             if activeListID == listID {
                 share = nil
@@ -156,6 +185,14 @@ final class ShoppingListShareManager: ObservableObject {
             )
             try modelContext.save()
 
+            Self.importCompletedCleanupReceipt()
+            for obsolete in ShoppingListLogic.emptyCloudListsMissingFromServer(
+                lists, items: try modelContext.fetch(FetchDescriptor<ShopItem>()),
+                availableZones: Set(lists.compactMap(\.sharedZoneName)), ownerName: CKCurrentUserDefaultName,
+                deletedZones: Self.deletedZoneNames
+            ) {
+                try removeLocalList(obsolete, settings: settings, modelContext: modelContext)
+            }
             accountStatus = try await container.accountStatus()
             guard accountStatus == .available else { return }
 
@@ -163,23 +200,49 @@ final class ShoppingListShareManager: ObservableObject {
             let sharedZones = try await container.sharedCloudDatabase.allRecordZones()
             let cloudZoneIDs = (privateZones + sharedZones)
                 .map(\.zoneID)
-                .filter(Self.isShoppingListZone)
+                .filter { Self.isShoppingListZone($0) && !Self.deletedZoneNames.contains($0.zoneName) }
 
+            lists = try modelContext.fetch(FetchDescriptor<ShoppingListEntry>())
+            let availableOwnedZones = Set(privateZones.map { $0.zoneID.zoneName })
+            for obsolete in ShoppingListLogic.emptyCloudListsMissingFromServer(
+                lists, items: try modelContext.fetch(FetchDescriptor<ShopItem>()),
+                availableZones: availableOwnedZones, ownerName: CKCurrentUserDefaultName,
+                deletedZones: Self.deletedZoneNames
+            ) {
+                try removeLocalList(obsolete, settings: settings, modelContext: modelContext)
+            }
             lists = try modelContext.fetch(FetchDescriptor<ShoppingListEntry>())
             var reusableList = lists.count == 1
                 && lists[0].sharedZoneName == nil
+                && lists[0].firebaseListID == nil
                 && lists[0].name == String(localized: "Shopping List")
                 ? lists[0]
                 : nil
             var restoredLists: [ShoppingListEntry] = []
 
             for zoneID in cloudZoneIDs {
+                let cached = lists.first { $0.sharedZoneName == zoneID.zoneName && $0.sharedZoneOwnerName == zoneID.ownerName }
+                // Zone enumeration can briefly include a deleted zone; verify it before restoring an empty list.
+                if cached == nil || !items.contains(where: { $0.listID == cached?.id }) {
+                    do { _ = try await fetchItemRecords(from: database(for: zoneID), zoneID: zoneID) }
+                    catch let error as CKError where error.code == .zoneNotFound {
+                        if let cached, !cached.isShared, cached.firebaseListID == nil,
+                           zoneID.ownerName == CKCurrentUserDefaultName,
+                           !(try modelContext.fetch(FetchDescriptor<ShopItem>())).contains(where: { $0.listID == cached.id }) {
+                            try removeLocalList(cached, settings: settings, modelContext: modelContext)
+                            lists.removeAll { $0.id == cached.id }
+                        }
+                        continue
+                    }
+                }
                 let cloudShare = try await fetchShare(in: zoneID)
                 if let existingList = lists.first(where: {
                     $0.sharedZoneName == zoneID.zoneName
                         && $0.sharedZoneOwnerName == zoneID.ownerName
                 }) {
                     existingList.isShared = sharingIsActive(cloudShare, zoneID: zoneID)
+                    if let title = cloudShare?[CKShare.SystemFieldKey.title] as? String,
+                       let name = ShoppingListLogic.listName(title) { existingList.name = name }
                     continue
                 }
                 let title = cloudShare?[CKShare.SystemFieldKey.title] as? String
@@ -242,12 +305,19 @@ final class ShoppingListShareManager: ObservableObject {
             item.listID.map { ($0, item.id) }
         }, by: \.0).mapValues { Set($0.map(\.1)).count }
         let cloudListGroups = Dictionary(grouping: lists.compactMap { list in
-            list.sharedZoneName.map {
+            guard list.firebaseListID == nil else { return nil as (ZoneIdentity, ShoppingListEntry)? }
+            return list.sharedZoneName.map {
                 (ZoneIdentity(name: $0, ownerName: list.sharedZoneOwnerName), list)
             }
         }, by: \.0)
 
-        for group in cloudListGroups.values.map({ $0.map(\.1) }) where group.count > 1 {
+        let firebaseListGroups = Dictionary(grouping: lists.compactMap { list -> ([String], ShoppingListEntry)? in
+            guard let accountID = list.firebaseAccountID, let listID = list.firebaseListID else { return nil }
+            return ([accountID, listID], list)
+        }, by: \.0)
+        let groups = cloudListGroups.values.map { $0.map(\.1) }
+            + firebaseListGroups.values.map { $0.map(\.1) }
+        for group in groups where group.count > 1 {
             guard let canonicalList = group.max(by: { lhs, rhs in
                 let lhsCount = itemCounts[lhs.id] ?? 0
                 let rhsCount = itemCounts[rhs.id] ?? 0
@@ -282,10 +352,10 @@ final class ShoppingListShareManager: ObservableObject {
         }, by: \.0).mapValues { Set($0.map(\.1)) }
 
         let ownedCloudLists = remainingLists.filter {
-            $0.sharedZoneOwnerName == CKCurrentUserDefaultName
+            $0.sharedZoneOwnerName == CKCurrentUserDefaultName && $0.firebaseListID == nil
         }
 
-        for localList in remainingLists where localList.sharedZoneName == nil {
+        for localList in remainingLists where localList.sharedZoneName == nil && localList.firebaseListID == nil {
             let localItemIDs = itemIDsByList[localList.id] ?? []
             if localItemIDs.isEmpty,
                let replacementID = localList.replacedByListID,
@@ -326,6 +396,9 @@ final class ShoppingListShareManager: ObservableObject {
         items: [ShopItem],
         modelContext: ModelContext
     ) {
+        if canonicalList.firebaseListID != nil, canonicalList.firebaseSourceListID == nil {
+            canonicalList.firebaseSourceListID = duplicateList.firebaseSourceListID
+        }
         let canonicalItems = ShoppingListLogic.uniqueItems(
             from: items.filter { $0.listID == canonicalList.id }
         )
@@ -353,6 +426,8 @@ final class ShoppingListShareManager: ObservableObject {
         modelContext.delete(duplicateList)
     }
 
+
+
     func prepareShare(list: ShoppingListEntry, modelContext: ModelContext) async -> CKShare? {
         guard !isWorking else { return nil }
         activeListID = list.id
@@ -374,11 +449,61 @@ final class ShoppingListShareManager: ObservableObject {
         }
     }
 
+    func renameList(_ list: ShoppingListEntry, to value: String, modelContext: ModelContext) async {
+        guard !isWorking else { return }
+        guard let name = ShoppingListLogic.listName(value) else {
+            alertMessage = String(localized: "Enter a list name with 1 to 1000 characters.")
+            return
+        }
+        guard !ShoppingListLogic.isReceivedList(list, firebaseUserID: firebase.user?.uid) else {
+            alertMessage = String(localized: "Only the owner can rename this list.")
+            return
+        }
+        isWorking = true
+        alertMessage = nil
+        defer { isWorking = false }
+        do {
+            if list.firebaseListID != nil {
+                try await firebase.renameList(list, to: name)
+            } else {
+                if let zone = zoneID(for: list) {
+                    let cloudShare: CKShare
+                    if let existing = try await fetchShare(in: zone) { cloudShare = existing }
+                    else {
+                        cloudShare = CKShare(recordZoneID: zone)
+                        cloudShare.publicPermission = .none
+                    }
+                    cloudShare[CKShare.SystemFieldKey.title] = name
+                    _ = try await database(for: zone).save(cloudShare)
+                    list.isShared = sharingIsActive(cloudShare, zoneID: zone)
+                }
+                list.name = name
+                try modelContext.save()
+            }
+        } catch { alertMessage = error.localizedDescription }
+    }
+
     func stopSharing(
         list: ShoppingListEntry,
         settings: ViewSettings,
         modelContext: ModelContext
     ) async -> Bool {
+        if list.firebaseListID != nil {
+            guard !isWorking else { return false }
+            isWorking = true
+            defer { isWorking = false }
+            do {
+                try await firebase.stopSharing(list)
+                UserDefaults.standard.removeObject(forKey: "pendingFirebaseSharingListID")
+                if list.firebaseOwnerID != firebase.user?.uid {
+                    try removeLocalList(list, settings: settings, modelContext: modelContext)
+                }
+                return true
+            } catch {
+                alertMessage = error.localizedDescription
+                return false
+            }
+        }
         guard !isWorking, let zoneID = zoneID(for: list) else { return false }
         isWorking = true
         alertMessage = nil
@@ -394,6 +519,7 @@ final class ShoppingListShareManager: ObservableObject {
                 }
             }
 
+            UserDefaults.standard.removeObject(forKey: "pendingFirebaseSharingListID")
             if zoneID.ownerName == CKCurrentUserDefaultName {
                 list.isShared = false
                 try modelContext.save()
@@ -422,7 +548,9 @@ final class ShoppingListShareManager: ObservableObject {
         defer { isWorking = false }
 
         do {
-            if let zoneID = zoneID(for: list) {
+            if list.firebaseListID != nil {
+                try await firebase.deleteList(list)
+            } else if let zoneID = zoneID(for: list) {
                 try await retryingOnce {
                     do {
                         if zoneID.ownerName == CKCurrentUserDefaultName {
@@ -438,6 +566,7 @@ final class ShoppingListShareManager: ObservableObject {
                         return
                     }
                 }
+                Self.deletedZoneNames.insert(zoneID.zoneName)
             }
 
             try removeLocalList(list, settings: settings, modelContext: modelContext)
@@ -454,6 +583,10 @@ final class ShoppingListShareManager: ObservableObject {
     }
 
     func sync(list: ShoppingListEntry, modelContext: ModelContext) async {
+        if list.firebaseListID != nil {
+            await firebase.sync(list: list)
+            return
+        }
         guard zoneID(for: list) != nil else { return }
         let listID = list.id
         guard !syncingListIDs.contains(listID) else {
@@ -564,7 +697,8 @@ final class ShoppingListShareManager: ObservableObject {
         }
 
         let remainingLists = ShoppingListLogic.visibleLists(
-            from: allLists.filter { !targetIDs.contains($0.id) }
+            from: allLists.filter { !targetIDs.contains($0.id) },
+            firebaseUserID: firebase.user?.uid
         )
         if targetIDs.contains(settings.currentListID ?? UUID()) {
             if let replacement = remainingLists.first {

@@ -1,0 +1,22 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "FTB9X87833.com.martinlanius.Shopping-List"
+        ],
+        "components": [
+          {
+            "/": "/invite/*"
+          },
+          {
+            "/": "/__/auth/links/*"
+          },
+          {
+            "/": "/__/auth/links"
+          }
+        ]
+      }
+    ]
+  }
+}

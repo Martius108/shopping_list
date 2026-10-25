@@ -1,7 +1,23 @@
 import CloudKit
+import FirebaseCore
+import FirebaseAuth
+import FirebaseFirestore
 import UIKit
 
 final class ShoppingListAppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        FirebaseApp.configure()
+        Auth.auth().useAppLanguage()
+        // SwiftData retains offline lists; avoid a second persistent cache across account changes.
+        let settings = Firestore.firestore().settings
+        settings.cacheSettings = MemoryCacheSettings()
+        Firestore.firestore().settings = settings
+        return true
+    }
+
     func application(
         _ application: UIApplication,
         configurationForConnecting connectingSceneSession: UISceneSession,

@@ -21,6 +21,8 @@ struct SettingsView: View {
     @Binding var settings: ViewSettings
     
     @State private var selectedPhoto: PhotosPickerItem?
+    @State private var isPresentingAccount = false
+    @State private var isPresentingAbout = false
 
     var body: some View {
         
@@ -34,6 +36,7 @@ struct SettingsView: View {
                     Text("Dark").tag(ThemeMode.dark.rawValue)
                 }
                 .pickerStyle(.segmented)
+                .shoppingImageLabelStyle(settings, fallbackColor: .primary)
                 .onChange(of: settings.themeMode) { _, newValue in
                     settings.applyTheme(ThemeMode(rawValue: newValue) ?? .system)
                     selectedPhoto = nil
@@ -52,7 +55,7 @@ struct SettingsView: View {
                     }
                 ))
                 .shoppingImageLabelStyle(
-                    settings.backgroundImageData != nil,
+                    settings,
                     fallbackColor: .primary
                 )
 
@@ -61,7 +64,7 @@ struct SettingsView: View {
                 PhotosPicker(selection: $selectedPhoto, matching: .images) {
                     Label("Select Background Image", systemImage: "photo")
                         .shoppingImageLabelStyle(
-                            settings.backgroundImageData != nil,
+                            settings,
                             fallbackColor: .blue
                         )
                 }
@@ -72,16 +75,33 @@ struct SettingsView: View {
                     .onChange(of: settings.elementOpacity) { _, _ in
                         try? modelContext.save()
                     }
-                Text("Opacity: \(Int(settings.elementOpacity * 100))%")
+                Text("Opacity: \(settings.elementOpacity, format: .percent.precision(.fractionLength(0)))")
                     .shoppingImageLabelStyle(
-                        settings.backgroundImageData != nil,
+                        settings,
                         fallbackColor: .primary
                     )
 
+                Button {
+                    isPresentingAccount = true
+                } label: {
+                    Label("ShoppingList account", systemImage: "person.crop.circle")
+                        .shoppingImageLabelStyle(settings, fallbackColor: .blue)
+                }
+                .buttonStyle(.plain)
+
+                Button { isPresentingAbout = true } label: {
+                    Label("About this app", systemImage: "info.circle")
+                        .shoppingImageLabelStyle(settings, fallbackColor: .blue)
+                }
+                .buttonStyle(.plain)
             }
             .padding()
         }
         .scrollIndicators(.hidden)
+        .sheet(isPresented: $isPresentingAccount) {
+            FirebaseSharingView(list: nil)
+        }
+        .sheet(isPresented: $isPresentingAbout) { AboutAppView() }
         .background {
             if let data = settings.backgroundImageData, let image = UIImage(data: data) {
                 Image(uiImage: image)
@@ -104,14 +124,14 @@ struct SettingsView: View {
                 try? modelContext.save()
             }
         }
-        .navigationTitle(settings.backgroundImageData == nil ? Text("Settings") : Text(""))
+        .navigationTitle(settings.backgroundImageData == nil ? Text("Settings") : Text(verbatim: ""))
         .navigationBarTitleDisplayMode(settings.backgroundImageData == nil ? .large : .inline)
         .toolbar(settings.backgroundImageData == nil ? .visible : .hidden, for: .navigationBar)
         .safeAreaInset(edge: .top, spacing: 0) {
             if settings.backgroundImageData != nil {
                 Text("Settings")
                     .font(.title2.bold())
-                    .shoppingImageLabelStyle(true, fallbackColor: .blue)
+                    .shoppingImageLabelStyle(settings, fallbackColor: .blue)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                     .padding(.bottom, 8)
@@ -124,7 +144,7 @@ struct SettingsView: View {
         Text(title)
             .font(.headline)
             .shoppingImageLabelStyle(
-                settings.backgroundImageData != nil,
+                settings,
                 fallbackColor: .primary
             )
     }

@@ -38,7 +38,7 @@ struct BoughtItemsView: View {
         Text("Recently bought")
             .font(.subheadline.weight(.semibold))
             .shoppingImageLabelStyle(
-                settings.backgroundImageData != nil,
+                settings,
                 fallbackColor: sectionHeaderColor
             )
             .frame(maxWidth: contentWidth, alignment: .leading)

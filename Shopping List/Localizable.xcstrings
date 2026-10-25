@@ -20,19 +20,84 @@
         }
       }
     },
-    "Access" : {
-      "extractionState" : "stale",
+    "A separate shared copy will be created for this group." : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zugriff"
+            "value" : "Für diese Gruppe wird eine eigene gemeinsame Kopie erstellt."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Access"
+            "value" : "A separate shared copy will be created for this group."
+          }
+        }
+      }
+    },
+    "About this app" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Über diese App"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About this app"
+          }
+        }
+      }
+    },
+    "Access could not be granted." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Freigabe konnte nicht abgeschlossen werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access could not be granted."
+          }
+        }
+      }
+    },
+    "Access saved. Send the prepared invitation in your mail app." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabe gespeichert. Sende jetzt die vorbereitete Einladung in deiner Mail-App."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access saved. Send the prepared invitation in your mail app."
+          }
+        }
+      }
+    },
+    "Account created. Open the link in your email, then return here to continue." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konto erstellt. Öffne den Link in deiner E-Mail und kehre anschließend hierher zurück, um fortzufahren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account created. Open the link in your email, then return here to continue."
           }
         }
       }
@@ -85,19 +150,18 @@
         }
       }
     },
-    "All invitations and participant access will be revoked. Your shopping list stays on this device." : {
-      "extractionState" : "stale",
+    "Adjust the appearance" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle Einladungen und Zugriffe werden widerrufen. Deine Einkaufsliste bleibt auf diesem Gerät erhalten."
+            "value" : "Darstellung anpassen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All invitations and participant access will be revoked. Your shopping list stays on this device."
+            "value" : "Adjust the appearance"
           }
         }
       }
@@ -118,19 +182,67 @@
         }
       }
     },
-    "Available" : {
-      "extractionState" : "stale",
+    "An existing ShoppingList account works on all your devices. Use the same email and ShoppingList password." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verfügbar"
+            "value" : "Ein vorhandenes Einkaufsliste-Konto gilt auf allen deinen Geräten. Verwende dieselbe E-Mail-Adresse und dasselbe Einkaufsliste-Passwort."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Available"
+            "value" : "An existing Shopping List account works on all your devices. Use the same email and Shopping List password."
+          }
+        }
+      }
+    },
+    "Android account" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Android-Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Android account"
+          }
+        }
+      }
+    },
+    "Apple / iCloud" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple / iCloud"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple / iCloud"
+          }
+        }
+      }
+    },
+    "As the owner, use the disconnect icon to stop sharing with others. Your list is kept and remains stored in your account. For a received list, Leave removes only your own access. The trash icon permanently deletes a list you own and its items, including for all participants when the list is shared. Signing out ends your session and does not revoke sharing." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit dem Trennen-Symbol beendest du als Besitzer die Freigabe für andere; deine Liste bleibt erhalten und weiterhin in deinem Konto gespeichert. Bei einer empfangenen Liste beendet Verlassen nur deinen eigenen Zugriff. Der Papierkorb löscht eine eigene Liste samt Artikeln dauerhaft, bei geteilten Listen auch für alle Teilnehmer. Abmelden beendet lediglich die Anmeldung und hebt keine Freigabe auf."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As the owner, use the disconnect icon to stop sharing with others. Your list is kept and remains stored in your account. For a received list, Leave removes only your own access. The trash icon permanently deletes a list you own and its items, including for all participants when the list is shared. Signing out ends your session and does not revoke sharing."
           }
         }
       }
@@ -167,23 +279,6 @@
         }
       }
     },
-    "Can edit" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Darf bearbeiten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Can edit"
-          }
-        }
-      }
-    },
     "Cancel" : {
       "localizations" : {
         "de" : {
@@ -216,36 +311,119 @@
         }
       }
     },
-    "Checking…" : {
-      "extractionState" : "stale",
+    "Choose the current list in the Lists tab. The sheet icon identifies a list you own; two people before the name identify a received list. A shared list you own also appears in Other Lists for managing access. Both rows refer to the same list, not a copy. Only the owner can add participants." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wird geprüft …"
+            "value" : "Im Tab Listen wählst du die aktuelle Liste aus. Das Blattsymbol steht für eine eigene Liste, zwei Personen vor dem Namen für eine empfangene Liste. Eine eigene geteilte Liste wird zusätzlich unter Weitere Listen zur Freigabeverwaltung angezeigt. Beide Zeilen zeigen dieselbe Liste, keine Kopie. Nur der Besitzer kann weitere Teilnehmer hinzufügen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checking…"
+            "value" : "Choose the current list in the Lists tab. The sheet icon identifies a list you own; two people before the name identify a received list. A shared list you own also appears in Other Lists for managing access. Both rows refer to the same list, not a copy. Only the owner can add participants."
           }
         }
       }
     },
-    "Could not determine" : {
-      "extractionState" : "stale",
+    "Choose the sharing icon on a list you own. Sign in to your Shopping List account, enter the email address of the recipient and send the prepared invitation using your mail app.\n\nIf the recipient is already signed in with the invited email address, the list appears automatically. If the list is already visible in the app, the invitation email can be ignored. Otherwise, the recipient opens the link and signs in or creates an account with the invited address.\n\nConfirm your email once when creating a new account. An existing verified account remains verified after signing out. Each person uses their own account; passwords are not shared. Sign-in is available with a password or an email link.\n\nYou can also use Apple / iCloud to share with Apple devices." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nicht ermittelbar"
+            "value" : "Wähle bei einer eigenen Liste das Teilen-Symbol. Melde dich mit deinem Einkaufsliste-Konto an, gib die E-Mail-Adresse des Empfängers ein und verschicke die vorbereitete Einladung in deiner Mail-App.\n\nIst der Empfänger mit der eingeladenen E-Mail-Adresse bereits angemeldet, erscheint die Liste automatisch. Wird die Liste schon in der App angezeigt, kann die Einladungsmail ignoriert werden. Andernfalls öffnet der Empfänger den Link und meldet sich mit der eingeladenen Adresse an oder legt damit ein Konto an.\n\nDie E-Mail-Adresse muss beim Anlegen eines neuen Kontos einmalig bestätigt werden. Ein bereits bestätigtes Konto bleibt auch nach einer Abmeldung bestätigt. Jede Person verwendet ihr eigenes Konto; Passwörter werden nicht geteilt. Die Anmeldung ist mit Passwort oder Anmeldelink möglich.\n\nFür Apple-Geräte kannst du auch Apple / iCloud zum Teilen verwenden."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Could not determine"
+            "value" : "Choose the sharing icon on a list you own. Sign in to your Shopping List account, enter the email address of the recipient and send the prepared invitation using your mail app.\n\nIf the recipient is already signed in with the invited email address, the list appears automatically. If the list is already visible in the app, the invitation email can be ignored. Otherwise, the recipient opens the link and signs in or creates an account with the invited address.\n\nConfirm your email once when creating a new account. An existing verified account remains verified after signing out. Each person uses their own account; passwords are not shared. Sign-in is available with a password or an email link.\n\nYou can also use Apple / iCloud to share with Apple devices."
+          }
+        }
+      }
+    },
+    "Confirm your email address before sharing." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestätige deine E-Mail-Adresse, bevor du Listen teilst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm your email address before sharing."
+          }
+        }
+      }
+    },
+    "Continue here with your existing account to finish sharing this list." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setze die Freigabe dieser Liste hier mit deinem vorhandenen Konto fort."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue here with your existing account to finish sharing this list."
+          }
+        }
+      }
+    },
+    "Continue sharing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freigabe fortsetzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue sharing"
+          }
+        }
+      }
+    },
+    "Create a new account" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neues Konto erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a new account"
+          }
+        }
+      }
+    },
+    "Create account" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konto erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create account"
           }
         }
       }
@@ -266,6 +444,22 @@
         }
       }
     },
+    "Current list and symbols" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelle Liste und Symbole"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current list and symbols"
+          }
+        }
+      }
+    },
     "Dark" : {
       "localizations" : {
         "de" : {
@@ -282,36 +476,19 @@
         }
       }
     },
-    "Delete Access" : {
-      "extractionState" : "stale",
+    "Delete account" : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Freigaben löschen"
+            "value" : "Konto löschen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Access"
-          }
-        }
-      }
-    },
-    "Delete Access?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Freigaben löschen?"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete Access?"
+            "value" : "Delete account"
           }
         }
       }
@@ -348,36 +525,166 @@
         }
       }
     },
-    "Delete Sharing" : {
-      "extractionState" : "stale",
+    "Delete ShoppingList account" : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Freigabe löschen"
+            "value" : "Einkaufsliste-Konto löschen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Sharing"
+            "value" : "Delete Shopping List account"
           }
         }
       }
     },
-    "Delete Sharing?" : {
-      "extractionState" : "stale",
+    "Done" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Freigabe löschen?"
+            "value" : "Fertig"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Sharing?"
+            "value" : "Done"
+          }
+        }
+      }
+    },
+    "Email address" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail-Adresse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email address"
+          }
+        }
+      }
+    },
+    "Email address confirmed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail-Adresse bestätigt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email address confirmed"
+          }
+        }
+      }
+    },
+    "Enter a list name with 1 to 1000 characters." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib einen Listennamen mit 1 bis 1000 Zeichen ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a list name with 1 to 1000 characters."
+          }
+        }
+      }
+    },
+    "Enter a valid email address." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib eine gültige E-Mail-Adresse ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a valid email address."
+          }
+        }
+      }
+    },
+    "Enter the email address for which you requested this sign-in link." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib die E-Mail-Adresse ein, für die du diesen Anmeldelink angefordert hast."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the email address for which you requested this sign-in link."
+          }
+        }
+      }
+    },
+    "Enter the recipient’s email address. On your own other device, use the same ShoppingList account." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib die E-Mail-Adresse der Person ein. Auf einem eigenen weiteren Gerät nutzt du dasselbe Einkaufsliste-Konto."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the recipient’s email address. On your own other device, use the same Shopping List account."
+          }
+        }
+      }
+    },
+    "Firebase and your data" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Firebase und deine Daten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Firebase and your data"
+          }
+        }
+      }
+    },
+    "Google Firebase privacy information" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenschutzhinweise von Google Firebase"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Firebase privacy information"
           }
         }
       }
@@ -398,6 +705,23 @@
         }
       }
     },
+    "I have confirmed my email" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ich habe meine E-Mail-Adresse bestätigt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I have confirmed my email"
+          }
+        }
+      }
+    },
     "I need" : {
       "localizations" : {
         "de" : {
@@ -410,23 +734,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "I need"
-          }
-        }
-      }
-    },
-    "iCloud Account" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud-Account"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud Account"
           }
         }
       }
@@ -463,19 +770,51 @@
         }
       }
     },
-    "iCloud sharing is unavailable. Check your iCloud sign-in in Settings." : {
-      "extractionState" : "stale",
+    "If an account exists for this address, you will receive a password reset email." : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud-Freigaben sind nicht verfügbar. Prüfe deine iCloud-Anmeldung in den Einstellungen."
+            "value" : "Falls für diese Adresse ein Konto besteht, erhältst du eine E-Mail zum Zurücksetzen des Passworts."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud sharing is unavailable. Check your iCloud sign-in in Settings."
+            "value" : "If an account exists for this address, you will receive a password reset email."
+          }
+        }
+      }
+    },
+    "In the Lists tab, press and hold the name of a list you own. Enter the new name and choose Save. Renaming a shared list you own changes its name for all participants. Only the owner can rename a received list." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drücke im Tab Listen lange auf den Namen einer eigenen Liste. Gib den neuen Namen ein und wähle Speichern. Bei einer eigenen geteilten Liste gilt der neue Name für alle Teilnehmer. Empfangene Listen kann nur ihr Besitzer umbenennen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the Lists tab, press and hold the name of a list you own. Enter the new name and choose Save. Renaming a shared list you own changes its name for all participants. Only the owner can rename a received list."
+          }
+        }
+      }
+    },
+    "Invitation" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einladung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invitation"
           }
         }
       }
@@ -492,6 +831,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Item name"
+          }
+        }
+      }
+    },
+    "Later" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Später"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Later"
           }
         }
       }
@@ -576,6 +932,23 @@
         }
       }
     },
+    "Lists shared with your confirmed email address appear automatically in the Lists tab." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen, die für deine bestätigte E-Mail-Adresse freigegeben sind, erscheinen automatisch im Tab „Listen“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lists shared with your confirmed email address appear automatically in the Lists tab."
+          }
+        }
+      }
+    },
     "Loading settings ..." : {
       "localizations" : {
         "de" : {
@@ -592,70 +965,34 @@
         }
       }
     },
-    "Manage Sharing" : {
-      "extractionState" : "stale",
+    "Local lists and offline use" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Freigabe verwalten"
+            "value" : "Lokale Listen und Offline-Nutzung"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Manage Sharing"
+            "value" : "Local lists and offline use"
           }
         }
       }
     },
-    "No access" : {
-      "extractionState" : "stale",
+    "No mail app is available. Set up a mail app, then use Send invitation next to the recipient." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kein Zugriff"
+            "value" : "Keine Mail-App verfügbar. Richte eine Mail-App ein und wähle dann „Einladung senden“ neben dem Empfänger."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No access"
-          }
-        }
-      }
-    },
-    "No iCloud Account" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kein iCloud-Account"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No iCloud Account"
-          }
-        }
-      }
-    },
-    "No one gets access until you invite them using the button below." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erst wenn du unten eine Person einlädst, erhält sie Zugriff auf deine Einkaufsliste."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No one gets access until you invite them using the button below."
+            "value" : "No mail app is available. Set up a mail app, then use Send invitation next to the recipient."
           }
         }
       }
@@ -676,40 +1013,53 @@
         }
       }
     },
-    "Not shared" : {
-      "extractionState" : "stale",
+    "OK" : {
+      "comment" : "The label of a button that dismisses an alert.",
+      "isCommentAutoGenerated" : true,
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nicht geteilt"
+            "value" : "OK"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Not shared"
+            "value" : "OK"
           }
         }
       }
     },
-    "OK" : {
-      "comment" : "The label of a button that dismisses an alert.",
-      "isCommentAutoGenerated" : true
-    },
-    "Only you" : {
-      "extractionState" : "stale",
+    "Only the owner can change access to this list." : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nur du"
+            "value" : "Nur der Eigentümer kann den Zugriff auf diese Liste ändern."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Only you"
+            "value" : "Only the owner can change access to this list."
+          }
+        }
+      }
+    },
+    "Only the owner can rename this list." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur der Eigentümer kann diese Liste umbenennen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only the owner can rename this list."
           }
         }
       }
@@ -719,7 +1069,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Transparenz"
+            "value" : "Deckkraft"
           }
         },
         "en" : {
@@ -730,18 +1080,67 @@
         }
       }
     },
-    "Opacity: %lld%%" : {
+    "Opacity: %@" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Transparenz: %lld%%"
+            "value" : "Deckkraft: %@"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opacity: %lld%%"
+            "value" : "Opacity: %@"
+          }
+        }
+      }
+    },
+    "Open list" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open list"
+          }
+        }
+      }
+    },
+    "Open the link in the confirmation email, then return here. Sharing continues in this dialog." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne den Link in der Bestätigungs-E-Mail und kehre anschließend hierher zurück. Die Freigabe geht in diesem Dialog weiter."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the link in the confirmation email, then return here. Sharing continues in this dialog."
+          }
+        }
+      }
+    },
+    "Opening the shared list…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geteilte Liste wird geöffnet …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opening the shared list…"
           }
         }
       }
@@ -778,104 +1177,52 @@
         }
       }
     },
-    "Other people with access" : {
-      "extractionState" : "stale",
+    "Password" : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Weitere Personen mit Zugriff"
+            "value" : "Passwort"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Other people with access"
+            "value" : "Password"
           }
         }
       }
     },
-    "Owner" : {
-      "extractionState" : "stale",
+    "People with access" : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eigentümer"
+            "value" : "Personen mit Zugriff"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Owner"
+            "value" : "People with access"
           }
         }
       }
     },
-    "Participant" : {
-      "extractionState" : "stale",
+    "Please wait…" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teilnehmer"
+            "value" : "Bitte warten …"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Participant"
-          }
-        }
-      }
-    },
-    "Participants" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teilnehmer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Participants"
-          }
-        }
-      }
-    },
-    "Pending invitations" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ausstehende Einladungen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pending invitations"
-          }
-        }
-      }
-    },
-    "Read only" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nur lesen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Read only"
+            "value" : "Please wait…"
           }
         }
       }
@@ -892,6 +1239,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recently bought"
+          }
+        }
+      }
+    },
+    "Recipient email address" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail-Adresse des Empfängers"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recipient email address"
+          }
+        }
+      }
+    },
+    "Remove access" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugriff entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove access"
           }
         }
       }
@@ -928,36 +1309,67 @@
         }
       }
     },
-    "Restricted" : {
-      "extractionState" : "stale",
+    "Rename List" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eingeschränkt"
+            "value" : "Liste umbenennen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Restricted"
+            "value" : "Rename List"
           }
         }
       }
     },
-    "Role" : {
-      "extractionState" : "stale",
+    "Rename lists" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rolle"
+            "value" : "Listen umbenennen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Role"
+            "value" : "Rename lists"
+          }
+        }
+      }
+    },
+    "Reset password" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort zurücksetzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset password"
+          }
+        }
+      }
+    },
+    "Save" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
           }
         }
       }
@@ -994,19 +1406,18 @@
         }
       }
     },
-    "Select Image" : {
-      "extractionState" : "stale",
+    "Select the existing shared list to manage its access." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle ein Bild"
+            "value" : "Wähle die vorhandene geteilte Liste, um ihre Freigabe zu verwalten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select Image"
+            "value" : "Select the existing shared list to manage its access."
           }
         }
       }
@@ -1027,6 +1438,72 @@
         }
       }
     },
+    "Selected List" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausgewählte Liste"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected List"
+          }
+        }
+      }
+    },
+    "Send invitation" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einladung senden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send invitation"
+          }
+        }
+      }
+    },
+    "Send verification email" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestätigungs-E-Mail erneut senden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resend verification email"
+          }
+        }
+      }
+    },
+    "Set or change password" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwort festlegen oder ändern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set or change password"
+          }
+        }
+      }
+    },
     "Settings" : {
       "localizations" : {
         "de" : {
@@ -1043,53 +1520,34 @@
         }
       }
     },
-    "Share Shopping List" : {
-      "extractionState" : "stale",
+    "Share list" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einkaufsliste teilen"
+            "value" : "Liste teilen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share Shopping List"
+            "value" : "Share list"
           }
         }
       }
     },
-    "Shared" : {
-      "extractionState" : "stale",
+    "Share lists" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geteilt"
+            "value" : "Listen teilen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shared"
-          }
-        }
-      }
-    },
-    "Shared by another person" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Von einer anderen Person geteilt"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shared by another person"
+            "value" : "Share lists"
           }
         }
       }
@@ -1126,36 +1584,35 @@
         }
       }
     },
-    "Sharing Status" : {
-      "extractionState" : "stale",
+    "Sharing not finished" : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Freigabestatus"
+            "value" : "Freigabe noch nicht abgeschlossen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sharing Status"
+            "value" : "Sharing not finished"
           }
         }
       }
     },
-    "Sharing unavailable" : {
-      "extractionState" : "stale",
+    "Sharing your list… Please wait." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Freigabe nicht möglich"
+            "value" : "Liste wird freigegeben … Bitte warten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sharing unavailable"
+            "value" : "Sharing your list… Please wait."
           }
         }
       }
@@ -1176,6 +1633,121 @@
         }
       }
     },
+    "Shopping List by Martin Lanius" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einkaufsliste von Martin Lanius"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shopping List by Martin Lanius"
+          }
+        }
+      }
+    },
+    "Shopping List: invitation to %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einkaufsliste: Einladung zu %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shopping List: invitation to %@"
+          }
+        }
+      }
+    },
+    "ShoppingList account" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einkaufsliste-Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shopping List account"
+          }
+        }
+      }
+    },
+    "Sign in" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmelden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in"
+          }
+        }
+      }
+    },
+    "Sign in again to continue." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich erneut an, um fortzufahren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in again to continue."
+          }
+        }
+      }
+    },
+    "Sign in by email link — no password" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldelink per E-Mail – ohne Passwort"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in by email link — no password"
+          }
+        }
+      }
+    },
+    "Sign in or create a ShoppingList account with the invited email. After email confirmation, the list opens automatically." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich an oder erstelle ein Einkaufsliste-Konto mit der eingeladenen E-Mail-Adresse. Nach der E-Mail-Bestätigung öffnet sich die Liste automatisch."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in or create a Shopping List account with the invited email. After email confirmation, the list opens automatically."
+          }
+        }
+      }
+    },
     "Sign in to iCloud in Settings and try again." : {
       "localizations" : {
         "de" : {
@@ -1188,6 +1760,103 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sign in to iCloud in Settings and try again."
+          }
+        }
+      }
+    },
+    "Sign in to share lists with other people on Android and iPhone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich an, um Listen mit anderen Personen auf Android und iPhone zu teilen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in to share lists with other people on Android and iPhone."
+          }
+        }
+      }
+    },
+    "Sign in without a password" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Passwort anmelden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in without a password"
+          }
+        }
+      }
+    },
+    "Sign out" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abmelden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign out"
+          }
+        }
+      }
+    },
+    "Sign out and sign in with the email address shown in this invitation." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich ab und mit der E-Mail-Adresse aus dieser Einladung an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign out and sign in with the email address shown in this invitation."
+          }
+        }
+      }
+    },
+    "Sign-in link sent. Open this email on this device to sign in without copying your password." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anmeldelink gesendet. Öffne diese E-Mail auf diesem Gerät, um dich ohne Abschreiben des Passworts anzumelden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign-in link sent. Open this email on this device to sign in without copying your password."
+          }
+        }
+      }
+    },
+    "Stop sharing, leave and delete" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufheben, verlassen und löschen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop sharing, leave and delete"
           }
         }
       }
@@ -1208,19 +1877,50 @@
         }
       }
     },
-    "Temporarily unavailable" : {
-      "extractionState" : "stale",
+    "System follows the device setting; Light and Dark override it for this app. In Settings, choose a background color or your own photo and adjust opacity to keep backed text and list elements readable." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vorübergehend nicht verfügbar"
+            "value" : "System übernimmt die Geräteeinstellung; Hell und Dunkel überschreiben sie für diese App. In den Einstellungen kannst du eine Hintergrundfarbe oder ein eigenes Foto wählen und die Deckkraft für gut lesbare hinterlegte Elemente anpassen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Temporarily unavailable"
+            "value" : "System follows the device setting; Light and Dark override it for this app. In Settings, choose a background color or your own photo and adjust opacity to keep backed text and list elements readable."
+          }
+        }
+      }
+    },
+    "The app uses Google Firebase as an external service provider for accounts, connected lists, invitations and sign-in links. Firebase Authentication processes your email address, sign-in information and technical connection data. This authentication service operates in the United States.\n\nCloud Firestore stores connected list names, items, quantities, purchase status, timestamps, user identifiers and invited email addresses. The list database is located in Frankfurt. Participants can see the email addresses within their shared list.\n\nBackground photos and appearance settings are not uploaded to Firebase. Firebase Analytics is not included in this app. With iCloud sync enabled on iPhone, lists, background photos and appearance settings can also sync through your private Apple account." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für Konten, geteilte Listen sowie Einladungs- und Anmeldelinks verwendet die App Google Firebase als externen Dienstleister. Firebase Authentication verarbeitet E-Mail-Adresse, Anmeldedaten und technische Verbindungsdaten. Dieser Anmeldedienst arbeitet in den USA.\n\nCloud Firestore speichert verbundene Listennamen, Artikel, Mengen, Kaufstatus, Zeitpunkte, Benutzerkennungen und freigegebene E-Mail-Adressen. Die Listendatenbank liegt in Frankfurt. Teilnehmer können die E-Mail-Adressen innerhalb ihrer geteilten Liste sehen.\n\nHintergrundbilder und Darstellungseinstellungen werden nicht an Firebase übertragen. Firebase Analytics ist in dieser App nicht eingebunden. Bei aktivierter iCloud-Synchronisierung auf dem iPhone können Listen, Hintergrundfotos und Darstellungseinstellungen außerdem über deinen privaten Apple-Account synchronisiert werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app uses Google Firebase as an external service provider for accounts, connected lists, invitations and sign-in links. Firebase Authentication processes your email address, sign-in information and technical connection data. This authentication service operates in the United States.\n\nCloud Firestore stores connected list names, items, quantities, purchase status, timestamps, user identifiers and invited email addresses. The list database is located in Frankfurt. Participants can see the email addresses within their shared list.\n\nBackground photos and appearance settings are not uploaded to Firebase. Firebase Analytics is not included in this app. With iCloud sync enabled on iPhone, lists, background photos and appearance settings can also sync through your private Apple account."
+          }
+        }
+      }
+    },
+    "The items could not be uploaded." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Artikel konnten nicht hochgeladen werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The items could not be uploaded."
           }
         }
       }
@@ -1257,6 +1957,22 @@
         }
       }
     },
+    "The list could not be saved." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Liste konnte nicht gespeichert werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The list could not be saved."
+          }
+        }
+      }
+    },
     "Theme Mode" : {
       "localizations" : {
         "de" : {
@@ -1289,6 +2005,118 @@
         }
       }
     },
+    "This email already has a ShoppingList account. Sign in with its existing password, or choose Reset password." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für diese E-Mail-Adresse gibt es bereits ein Einkaufsliste-Konto. Melde dich mit dem bestehenden Passwort an oder wähle „Passwort zurücksetzen“."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This email already has a Shopping List account. Sign in with its existing password, or choose Reset password."
+          }
+        }
+      }
+    },
+    "This invitation is invalid. Ask the sender for a new invitation." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Einladung ist ungültig. Bitte den Absender um eine neue Einladung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This invitation is invalid. Ask the sender for a new invitation."
+          }
+        }
+      }
+    },
+    "This invitation is no longer available for your account. Check the invited email and try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Einladung ist für dein Konto nicht mehr verfügbar. Prüfe die eingeladene E-Mail-Adresse und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This invitation is no longer available for your account. Check the invited email and try again."
+          }
+        }
+      }
+    },
+    "This invitation is unavailable or the server could not be reached. Check the invited email and try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Einladung ist nicht verfügbar oder der Server ist nicht erreichbar. Prüfe die eingeladene E-Mail-Adresse und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This invitation is unavailable or the server could not be reached. Check the invited email and try again."
+          }
+        }
+      }
+    },
+    "This list has not been shared yet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Liste ist noch nicht freigegeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This list has not been shared yet."
+          }
+        }
+      }
+    },
+    "This sign-in link could not be used. Request a new link." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Anmeldelink konnte nicht verwendet werden. Fordere einen neuen Link an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This sign-in link could not be used. Request a new link."
+          }
+        }
+      }
+    },
+    "This sign-in link is invalid. Request a new link." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Anmeldelink ist ungültig. Fordere einen neuen Link an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This sign-in link is invalid. Request a new link."
+          }
+        }
+      }
+    },
     "To buy" : {
       "localizations" : {
         "de" : {
@@ -1305,19 +2133,51 @@
         }
       }
     },
-    "Who has access" : {
-      "extractionState" : "stale",
+    "Verification email sent." : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wer hat Zugriff?"
+            "value" : "Bestätigungs-E-Mail wurde gesendet."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Who has access"
+            "value" : "Verification email sent."
+          }
+        }
+      }
+    },
+    "You can use local lists without an app account. With iCloud enabled, lists can also sync through your Apple account. Previously loaded shared lists can be viewed and edited offline; changes sync when you reopen or refresh with internet access. Signing in and managing access require internet access. Data stored only locally without a backup is lost if you delete the app." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokale Listen kannst du ohne App-Konto nutzen. Wenn iCloud aktiviert ist, können Listen zusätzlich über deinen Apple-Account synchronisiert werden. Zuletzt geladene geteilte Listen lassen sich offline ansehen und bearbeiten; Änderungen werden beim Öffnen oder Aktualisieren mit Internet abgeglichen. Für Anmeldung und Freigabeverwaltung wird Internet benötigt. Rein lokale Daten ohne Sicherung gehen beim Löschen der App verloren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can use local lists without an app account. With iCloud enabled, lists can also sync through your Apple account. Previously loaded shared lists can be viewed and edited offline; changes sync when you reopen or refresh with internet access. Signing in and managing access require internet access. Data stored only locally without a backup is lost if you delete the app."
+          }
+        }
+      }
+    },
+    "You have been invited to Shopping List: %@.\n\nIf this list is already visible in your app, no further action is needed and you can ignore this email. Otherwise, open this link on your phone:\n%@\n\nSign in with %@, or create a Shopping List account with this email and a password. If you create a new account, confirm your email once and return to the app. The list appears automatically." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sie wurden zur Einkaufsliste: %@ eingeladen.\n\nWenn diese Liste bereits in Ihrer App angezeigt wird, müssen Sie nichts weiter tun und können diese E-Mail ignorieren. Andernfalls öffnen Sie diesen Link auf Ihrem Telefon:\n%@\n\nMelden Sie sich mit %@ an oder erstellen Sie ein Einkaufsliste-Konto mit dieser E-Mail-Adresse und einem Passwort. Bestätigen Sie bei einem neuen Konto Ihre E-Mail-Adresse einmalig und kehren Sie zur App zurück. Die Liste erscheint automatisch."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have been invited to Shopping List: %@.\n\nIf this list is already visible in your app, no further action is needed and you can ignore this email. Otherwise, open this link on your phone:\n%@\n\nSign in with %@, or create a Shopping List account with this email and a password. If you create a new account, confirm your email once and return to the app. The list appears automatically."
           }
         }
       }
@@ -1338,36 +2198,53 @@
         }
       }
     },
-    "You will lose access to this shared list. Your own saved list stays on this device." : {
-      "extractionState" : "stale",
+    "Your account exists, but email delivery could not be confirmed. You can resend the confirmation email here." : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Du verlierst den Zugriff auf diese geteilte Liste. Deine eigene gespeicherte Liste bleibt auf diesem Gerät erhalten."
+            "value" : "Dein Konto ist angelegt, aber der Mailversand konnte nicht bestätigt werden. Du kannst die Bestätigungs-E-Mail hier erneut senden."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You will lose access to this shared list. Your own saved list stays on this device."
+            "value" : "Your account exists, but email delivery could not be confirmed. You can resend the confirmation email here."
           }
         }
       }
     },
-    "Your access" : {
-      "extractionState" : "stale",
+    "Your email is not confirmed yet. Open the link in the email, then return here." : {
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Zugriff"
+            "value" : "Deine E-Mail-Adresse ist noch nicht bestätigt. Öffne den Link in der E-Mail und kehre anschließend hierher zurück."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your access"
+            "value" : "Your email is not confirmed yet. Open the link in the email, then return here."
+          }
+        }
+      }
+    },
+    "Your shared lists will be deleted for all participants. Enter your password to confirm." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine eigenen geteilten Listen werden für alle Teilnehmer gelöscht. Gib zur Bestätigung dein Passwort ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your shared lists will be deleted for all participants. Enter your password to confirm."
           }
         }
       }

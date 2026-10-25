@@ -27,6 +27,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var shareManager: ShoppingListShareManager
+    @EnvironmentObject private var firebase: FirebaseShoppingListManager
     @Query(sort: \ShopItem.name) private var items: [ShopItem]
     @Query(sort: \ShoppingListEntry.createdAt) private var lists: [ShoppingListEntry]
     @Query private var storedSettings: [ViewSettings]
@@ -36,7 +37,12 @@ struct ContentView: View {
 
     var body: some View {
         Group {
-            if let settings, let currentList {
+            if settings != nil, firebase.emailSignInLink != nil, firebase.emailLinkAddress.isEmpty {
+                FirebaseEmailLinkView()
+            } else if settings != nil, let invitation = firebase.receivedInvitation {
+                FirebaseSharingView(list: nil, invitation: invitation, close: { firebase.closeInvitation() })
+                    .id(invitation.id)
+            } else if let settings, let currentList {
                 TabView(selection: $selectedTab) {
                     NavigationStack {
                         CurrentShoppingListView(settings: settings, list: currentList, items: items)
@@ -71,12 +77,14 @@ struct ContentView: View {
                     .tag(2)
                 }
                 .task {
+                    if firebase.user?.isEmailVerified == false { try? await firebase.refreshSession() }
                     await consumeAcceptedShare(settings: settings)
                     await shareManager.restoreCloudLists(settings: settings, modelContext: modelContext)
                 }
                 .onChange(of: scenePhase) { _, phase in
                     guard phase == .active else { return }
                     Task {
+                        if firebase.user?.isEmailVerified == false { try? await firebase.refreshSession() }
                         await consumeAcceptedShare(settings: settings)
                         await shareManager.restoreCloudLists(settings: settings, modelContext: modelContext)
                         if let list = self.currentList {
@@ -95,14 +103,37 @@ struct ContentView: View {
                     .onAppear(perform: loadData)
             }
         }
+        .onOpenURL { firebase.receiveInvitation($0) }
+        .onChange(of: firebase.receivedInvitation?.id) { _, value in
+            if value == nil { selectedTab = 0 }
+        }
         .preferredColorScheme(preferredColorScheme)
+        .alert("Action could not be completed", isPresented: Binding(
+            get: { firebase.alertMessage != nil },
+            set: { if !$0 { firebase.alertMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { firebase.alertMessage = nil }
+        } message: {
+            Text(firebase.alertMessage ?? "")
+        }
         .onChange(of: items.count) { _, _ in
             removeDuplicateItems()
+        }
+        .onChange(of: lists.count) { _, _ in
+            guard let settings else { return }
+            do {
+                try shareManager.consolidateEquivalentOwnedLists(
+                    lists: lists, items: items, settings: settings, modelContext: modelContext
+                )
+                try modelContext.save()
+            } catch {
+                print("Could not consolidate shopping lists: \(error.localizedDescription)")
+            }
         }
     }
 
     private var currentList: ShoppingListEntry? {
-        let visibleLists = ShoppingListLogic.visibleLists(from: lists)
+        let visibleLists = ShoppingListLogic.visibleLists(from: lists, firebaseUserID: firebase.user?.uid)
         guard let currentListID = settings?.currentListID else { return visibleLists.first }
         return visibleLists.first(where: { $0.id == currentListID }) ?? visibleLists.first
     }
@@ -123,8 +154,9 @@ struct ContentView: View {
             }
             settings.migrateDefaultAppearanceIfNeeded()
 
+            firebase.start(context: modelContext, settings: settings)
             var savedLists = try modelContext.fetch(FetchDescriptor<ShoppingListEntry>())
-            if savedLists.isEmpty {
+            if ShoppingListLogic.visibleLists(from: savedLists, firebaseUserID: firebase.user?.uid).isEmpty {
                 let list = ShoppingListEntry(
                     name: String(localized: "Shopping List"),
                     sharedZoneName: settings.sharedZoneName,
@@ -133,13 +165,13 @@ struct ContentView: View {
                 modelContext.insert(list)
                 savedLists = [list]
                 settings.currentListID = list.id
-                for item in items {
+                for item in items where item.listID == nil {
                     item.listID = list.id
                 }
             } else if !savedLists.contains(where: {
                 $0.id == settings.currentListID && $0.replacedByListID == nil
             }) {
-                settings.currentListID = ShoppingListLogic.visibleLists(from: savedLists).first?.id
+                settings.currentListID = ShoppingListLogic.visibleLists(from: savedLists, firebaseUserID: firebase.user?.uid).first?.id
             }
 
             if let currentListID = settings.currentListID {
@@ -248,7 +280,7 @@ private struct CurrentShoppingListView: View {
             if settings.backgroundImageData != nil {
                 Text(list.name)
                     .font(.title2.bold())
-                    .shoppingImageLabelStyle(true, fallbackColor: .blue)
+                    .shoppingImageLabelStyle(settings, fallbackColor: .blue)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
                     .padding(.bottom, 8)
